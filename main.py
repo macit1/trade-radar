@@ -1,4 +1,4 @@
-"""TradeRadar CLI - fetch OHLCV for the configured symbols into a chosen sink."""
+"""TradeRadar CLI - fetch OHLCV for the configured symbols into one or more sinks."""
 
 import argparse
 
@@ -6,15 +6,22 @@ import requests
 
 from traderadar.fetcher import fetch_prices
 from traderadar.storage import SINKS
-from traderadar.utils import DEFAULT_CONFIG_PATH, load_config, report
+from traderadar.utils import DEFAULT_CONFIG_PATH, load_config, report, unique_list
 
 
 def parse_args():
-    parser = argparse.ArgumentParser(description="Fetch daily OHLCV into CSV or SQLite.")
+    parser = argparse.ArgumentParser(
+        description="Fetch daily OHLCV into one or more sinks (CSV, SQLite)."
+    )
     parser.add_argument(
         "--output",
+        nargs="+",
         choices=sorted(SINKS),
-        help="where to write the data (default: the 'output' key in config.yaml)",
+        metavar="SINK",
+        help=(
+            f"one or more sinks to write to ({', '.join(sorted(SINKS))}); "
+            "default: the 'output' key in config.yaml"
+        ),
     )
     parser.add_argument(
         "--symbols",
@@ -35,9 +42,8 @@ def main():
     config = load_config(args.config)
 
     symbols = args.symbols or config["symbols"]
-    output = args.output or config["output"]
+    outputs = unique_list(args.output) if args.output else config["output"]
     interval = config["interval"]
-    sink = SINKS[output]
 
     failed = []
     for symbol in symbols:
@@ -51,7 +57,13 @@ def main():
             continue
 
         report(symbol, interval, prices)
-        print(f"\nWrote [{output}] -> {sink(prices, symbol, interval, config)}\n")
+
+        # Fetched once above; every sink writes that same frame.
+        print()
+        for name in outputs:
+            target = SINKS[name](prices, symbol, interval, config)
+            print(f"Wrote [{name}] -> {target}")
+        print()
 
     print("=" * 60)
     summary = f"Done: {len(symbols) - len(failed)} ok, {len(failed)} failed"

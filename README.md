@@ -1,7 +1,8 @@
 # TradeRadar
 
 Daily stock/crypto price tracker. Pulls OHLCV bars from Yahoo Finance and writes
-them to a sink you pick at run time: CSV files or a SQLite database.
+them to one or more sinks you pick at run time: CSV files, a SQLite database, or
+both from a single fetch.
 
 No order execution, no brokerage integration.
 
@@ -17,12 +18,17 @@ pip install -r requirements.txt
 python main.py                          # uses config.yaml defaults
 python main.py --output sql             # write to SQLite
 python main.py --output csv             # write one CSV per symbol
-python main.py --output sql --symbols MSFT NVDA
+python main.py --output csv sql         # both, from a single fetch per symbol
+python main.py --output csv sql --symbols MSFT NVDA
 python main.py --config other.yaml      # different config file
 ```
 
 Symbols, interval, range and paths all live in `config.yaml`. The CLI only
-overrides them.
+overrides them. `output` takes a single sink (`output: sql`) or a list
+(`output: [csv, sql]`); repeats are ignored, order is kept.
+
+Each symbol is fetched from Yahoo exactly once no matter how many sinks are
+selected.
 
 ## Layout
 

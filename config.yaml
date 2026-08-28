@@ -9,6 +9,7 @@ interval: 1d              # 1d | 1h (~2y max) | 1m (8 days max per request)
 range: 3y                 # 1d,5d,1mo,3mo,6mo,1y,2y,5y,10y,ytd (avoid 'max':
                           # it silently returns monthly bars, ignoring interval)
 
-output: sql               # default sink: csv | sql  (CLI --output overrides)
+output: [sql]             # sink list: csv, sql, or both. A single string
+                          # (output: sql) still works. CLI --output overrides.
 csv_path: data/raw        # used when output = csv
 db_path: data/traderadar.db   # used when output = sql
