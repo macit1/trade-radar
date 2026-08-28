@@ -30,16 +30,34 @@ overrides them. `output` takes a single sink (`output: sql`) or a list
 Each symbol is fetched from Yahoo exactly once no matter how many sinks are
 selected.
 
+## Dashboard
+
+```bash
+streamlit run dashboard.py
+```
+
+Reads the SQLite store directly - no export step. Pick symbols and a period in
+the sidebar to get KPI cards, a comparison line chart and a table of the latest
+bar. "Normalise to %" rebases every series to 0% at the start of the period, so
+symbols at different price levels can be compared by shape rather than by level.
+
+Run `python main.py --output sql` first; on an empty database the dashboard says
+so instead of failing.
+
 ## Layout
 
 ```
 main.py               CLI entry point and run loop
+dashboard.py          Streamlit dashboard, separate entry point (read-only)
 config.yaml           symbols, interval, range, sink paths
 traderadar/
   fetcher.py          Yahoo Finance chart endpoint -> DataFrame
-  storage.py          output sinks (csv, sql) behind one shared signature
+  storage.py          database access: write sinks (csv, sql) + read queries
   utils.py            config loading, inspection report
 ```
+
+`main.py` writes, `dashboard.py` reads, and neither imports the other - they
+only share `traderadar/storage.py` and `config.yaml`.
 
 ## Data
 
