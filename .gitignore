@@ -8,3 +8,6 @@ venv/
 data/
 outputs/
 logs/
+
+# Local task notes
+task.md
