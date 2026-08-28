@@ -13,3 +13,6 @@ logs/
 task.md
 CLAUDE.md
 PLAN.md
+
+# Scaffolding tools keep regenerating these; they are not project docs.
+AGENTS.md

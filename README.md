@@ -54,6 +54,22 @@ Two chart types:
 Run `python main.py --output sql` first; on an empty database the dashboard says
 so instead of failing.
 
+## API and web dashboard
+
+```bash
+uvicorn backend.main:app --reload      # http://127.0.0.1:8000  (docs at /docs)
+cd frontend && npm run dev             # http://localhost:3000
+```
+
+The API serves `GET /symbols` and `GET /prices?symbols=MSFT&symbols=NVDA`
+straight from SQLite. The Next.js dashboard reads those two endpoints and draws
+either a multi-symbol line chart or candlesticks for a single symbol, using
+`lightweight-charts`. Copy `frontend/.env.example` to `frontend/.env.local` to
+point the frontend at a different API host.
+
+The Streamlit dashboard still works and is unchanged; it is retired only once
+the web version reaches parity.
+
 ## Layout
 
 ```
@@ -65,6 +81,9 @@ traderadar/
   storage.py          database access: write sinks (csv, sql) + read queries
   utils.py            config loading, inspection report
   dashboard.py        Streamlit dashboard, separate entry point (read-only)
+backend/
+  main.py             FastAPI app: /symbols and /prices, read-only
+frontend/             Next.js + Tailwind + shadcn/ui dashboard
 data/                 sqlite database and raw CSVs (gitignored)
 ```
 
