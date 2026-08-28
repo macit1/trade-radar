@@ -10,6 +10,7 @@ lives here.
 from functools import lru_cache
 
 from fastapi import FastAPI, Query
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
 from traderadar.storage import list_symbols, read_prices
@@ -19,6 +20,15 @@ app = FastAPI(
     title="TradeRadar API",
     version="0.1.0",
     description="Daily OHLCV bars from the local TradeRadar store.",
+)
+
+# The Next.js dev server is a different origin, so the browser needs this to let
+# it read responses. Scoped to that origin and to GET - no wildcard.
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],
+    allow_methods=["GET"],
+    allow_headers=["*"],
 )
 
 
