@@ -9,5 +9,6 @@ data/
 outputs/
 logs/
 
-# Local task notes
+# Local notes - not part of the public repo
 task.md
+CLAUDE.md
