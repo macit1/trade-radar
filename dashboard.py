@@ -7,6 +7,7 @@ what the CLI has already stored.
 """
 
 import pandas as pd
+import plotly.graph_objects as go
 import streamlit as st
 
 from traderadar import storage
@@ -57,6 +58,29 @@ def to_percent_change(closes):
     comparable.
     """
     return closes.apply(lambda column: column / column.dropna().iloc[0] * 100 - 100)
+
+
+def candlestick_figure(prices, symbol):
+    """OHLC bars for a single symbol. Several symbols at once would overlap."""
+    bars = prices[prices["symbol"] == symbol].sort_values("date")
+
+    figure = go.Figure(
+        go.Candlestick(
+            x=bars["date"],
+            open=bars["open"],
+            high=bars["high"],
+            low=bars["low"],
+            close=bars["close"],
+            name=symbol,
+        )
+    )
+    figure.update_layout(
+        margin=dict(l=0, r=0, t=10, b=0),
+        height=420,
+        # The period radio already controls the time window; a second one confuses.
+        xaxis_rangeslider_visible=False,
+    )
+    return figure
 
 
 def summarise(prices):
@@ -113,11 +137,20 @@ def main():
         st.header("Filters")
         symbols = st.multiselect("Symbols", available, default=available[:2])
         period = st.radio("Period", list(PERIODS), index=len(PERIODS) - 1, horizontal=True)
-        normalise = st.checkbox(
-            "Normalise to %",
-            help="Rebase each series to 0% at the start of the period so the "
-            "trends can be compared regardless of price level.",
-        )
+        chart_type = st.radio("Chart", ["Line", "Candlestick"], horizontal=True)
+
+        # Each chart type has one control of its own; showing the other type's
+        # control greyed out or inert would only be noise.
+        candle_symbol = None
+        normalise = False
+        if chart_type == "Candlestick":
+            candle_symbol = st.selectbox("Candlestick symbol", symbols) if symbols else None
+        else:
+            normalise = st.checkbox(
+                "Normalise to %",
+                help="Rebase each series to 0% at the start of the period so the "
+                "trends can be compared regardless of price level.",
+            )
         if st.button("Reload from database"):
             st.cache_data.clear()
             st.rerun()
@@ -135,10 +168,14 @@ def main():
     render_kpis(summary)
 
     st.subheader("Price trend")
-    closes = close_by_symbol(prices)
-    st.line_chart(to_percent_change(closes) if normalise else closes)
-    if normalise:
-        st.caption("Percent change since the first bar of the selected period.")
+    if chart_type == "Candlestick":
+        st.plotly_chart(candlestick_figure(prices, candle_symbol), width="stretch")
+        st.caption(f"Daily OHLC bars for {candle_symbol}.")
+    else:
+        closes = close_by_symbol(prices)
+        st.line_chart(to_percent_change(closes) if normalise else closes)
+        if normalise:
+            st.caption("Percent change since the first bar of the selected period.")
 
     st.subheader("Latest bar")
     st.dataframe(

@@ -37,9 +37,16 @@ streamlit run dashboard.py
 ```
 
 Reads the SQLite store directly - no export step. Pick symbols and a period in
-the sidebar to get KPI cards, a comparison line chart and a table of the latest
-bar. "Normalise to %" rebases every series to 0% at the start of the period, so
-symbols at different price levels can be compared by shape rather than by level.
+the sidebar to get KPI cards, a price chart and a table of the latest bar.
+
+Two chart types:
+
+- **Line** compares every selected symbol. "Normalise to %" rebases each series
+  to 0% at the start of the period, so symbols at different price levels can be
+  compared by shape rather than by level.
+- **Candlestick** shows daily OHLC bars for one symbol, picked from a selector
+  that lists whatever is currently selected above. Several symbols of candles on
+  one axis would be unreadable, so this view stays single-symbol.
 
 Run `python main.py --output sql` first; on an empty database the dashboard says
 so instead of failing.
