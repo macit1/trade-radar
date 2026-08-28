@@ -11,6 +11,7 @@ import {
 } from "lightweight-charts";
 import { useEffect, useRef } from "react";
 
+import { candleSeriesData, lineSeriesData } from "@/lib/analytics";
 import { LINE_COLORS, candlestickOptions, chartOptions } from "@/lib/chartTheme";
 import type { ChartType, PriceBar } from "@/lib/types";
 
@@ -18,6 +19,7 @@ type Props = {
   bars: PriceBar[];
   symbols: string[];
   chartType: ChartType;
+  normalise: boolean;
 };
 
 /**
@@ -26,7 +28,7 @@ type Props = {
  * state, and the work is split across two effects with different dependencies
  * so that a data change never tears down the chart itself.
  */
-export function PriceChart({ bars, symbols, chartType }: Props) {
+export function PriceChart({ bars, symbols, chartType, normalise }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
   const chartRef = useRef<IChartApi | null>(null);
   const seriesRef = useRef<ISeriesApi<SeriesType>[]>([]);
@@ -60,7 +62,7 @@ export function PriceChart({ bars, symbols, chartType }: Props) {
     };
   }, []);
 
-  // Rebuild the series when the data, the symbols or the chart type change.
+  // Rebuild the series when the data, symbols, chart type or scaling change.
   // Creating a series and filling it are one step on purpose: a separate effect
   // for setData would leave a frame where an empty series is already attached.
   useEffect(() => {
@@ -78,22 +80,10 @@ export function PriceChart({ bars, symbols, chartType }: Props) {
 
       const series = chart.addSeries(CandlestickSeries, candlestickOptions);
       series.setData(
-        bars
-          .filter(
-            (bar) =>
-              bar.symbol === symbol &&
-              bar.open !== null &&
-              bar.high !== null &&
-              bar.low !== null &&
-              bar.close !== null,
-          )
-          .map((bar) => ({
-            time: bar.date as Time,
-            open: bar.open as number,
-            high: bar.high as number,
-            low: bar.low as number,
-            close: bar.close as number,
-          })),
+        candleSeriesData(bars, symbol).map((bar) => ({
+          ...bar,
+          time: bar.time as Time,
+        })),
       );
       seriesRef.current = [series];
     } else {
@@ -103,15 +93,17 @@ export function PriceChart({ bars, symbols, chartType }: Props) {
           lineWidth: 2,
           priceLineVisible: false,
           lastValueVisible: false,
+          // Normalised values are percentages, so the axis has to say so.
+          priceFormat: normalise
+            ? { type: "percent" }
+            : { type: "price", precision: 2, minMove: 0.01 },
         });
 
         series.setData(
-          bars
-            .filter((bar) => bar.symbol === symbol && bar.close !== null)
-            .map((bar) => ({
-              time: bar.date as Time,
-              value: bar.close as number,
-            })),
+          lineSeriesData(bars, symbol, normalise).map((point) => ({
+            ...point,
+            time: point.time as Time,
+          })),
         );
 
         return series;
@@ -119,7 +111,7 @@ export function PriceChart({ bars, symbols, chartType }: Props) {
     }
 
     chart.timeScale().fitContent();
-  }, [bars, symbols, chartType]);
+  }, [bars, symbols, chartType, normalise]);
 
   return <div ref={containerRef} className="h-[440px] w-full" />;
 }
