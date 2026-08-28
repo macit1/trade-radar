@@ -9,8 +9,11 @@ No order execution, no brokerage integration.
 ## Setup
 
 ```bash
-pip install -r requirements.txt
+pip install -e .
 ```
+
+`pyproject.toml` is the source of truth for dependencies. `requirements.txt`
+is a thin mirror of it for plain `pip install -r` workflows.
 
 ## Usage
 
@@ -33,7 +36,7 @@ selected.
 ## Dashboard
 
 ```bash
-streamlit run dashboard.py
+streamlit run traderadar/dashboard.py
 ```
 
 Reads the SQLite store directly - no export step. Pick symbols and a period in
@@ -55,16 +58,18 @@ so instead of failing.
 
 ```
 main.py               CLI entry point and run loop
-dashboard.py          Streamlit dashboard, separate entry point (read-only)
 config.yaml           symbols, interval, range, sink paths
+pyproject.toml        package metadata and dependencies (source of truth)
 traderadar/
   fetcher.py          Yahoo Finance chart endpoint -> DataFrame
   storage.py          database access: write sinks (csv, sql) + read queries
   utils.py            config loading, inspection report
+  dashboard.py        Streamlit dashboard, separate entry point (read-only)
+data/                 sqlite database and raw CSVs (gitignored)
 ```
 
-`main.py` writes, `dashboard.py` reads, and neither imports the other - they
-only share `traderadar/storage.py` and `config.yaml`.
+`main.py` writes, `traderadar/dashboard.py` reads, and neither imports the
+other - they only share `traderadar/storage.py` and `config.yaml`.
 
 ## Data
 

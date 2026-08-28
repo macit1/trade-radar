@@ -1,6 +1,6 @@
 """Streamlit dashboard - reads the SQLite store directly, no export step.
 
-Run with:  streamlit run dashboard.py
+Run with:  streamlit run traderadar/dashboard.py
 
 Separate entry point from main.py: this module never fetches, it only reads
 what the CLI has already stored.
