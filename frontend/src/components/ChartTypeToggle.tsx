@@ -1,6 +1,7 @@
 "use client";
 
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { TOGGLE_ITEM } from "@/lib/toggleStyles";
 import type { ChartType } from "@/lib/types";
 
 type Props = {
@@ -12,6 +13,7 @@ export function ChartTypeToggle({ value, onChange }: Props) {
   return (
     <ToggleGroup
       variant="outline"
+      size="sm"
       value={[value]}
       onValueChange={(next) => {
         // Base UI reports the group's value as an array and allows clearing it;
@@ -20,8 +22,12 @@ export function ChartTypeToggle({ value, onChange }: Props) {
         if (picked) onChange(picked);
       }}
     >
-      <ToggleGroupItem value="line">Line</ToggleGroupItem>
-      <ToggleGroupItem value="candlestick">Candlestick</ToggleGroupItem>
+      <ToggleGroupItem value="line" className={TOGGLE_ITEM}>
+        Line
+      </ToggleGroupItem>
+      <ToggleGroupItem value="candlestick" className={TOGGLE_ITEM}>
+        Candlestick
+      </ToggleGroupItem>
     </ToggleGroup>
   );
 }

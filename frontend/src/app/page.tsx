@@ -7,6 +7,7 @@ import { KpiCards } from "@/components/KpiCards";
 import { NormaliseSwitch } from "@/components/NormaliseSwitch";
 import { PeriodToggle } from "@/components/PeriodToggle";
 import { PriceChart } from "@/components/PriceChart";
+import { RadarMark } from "@/components/RadarMark";
 import { SymbolMultiSelect } from "@/components/SymbolMultiSelect";
 import { usePrices } from "@/hooks/usePrices";
 import { useSymbols } from "@/hooks/useSymbols";
@@ -45,34 +46,36 @@ export default function DashboardPage() {
     [pricesQuery.data, period],
   );
 
-  const summaries = useMemo(
-    () => summarise(bars, selected),
-    [bars, selected],
-  );
+  const summaries = useMemo(() => summarise(bars, selected), [bars, selected]);
 
   const error = symbolsQuery.error ?? pricesQuery.error;
   const loading = symbolsQuery.isLoading || pricesQuery.isFetching;
 
   return (
     <main className="mx-auto flex w-full max-w-6xl flex-col gap-6 px-6 py-10">
-      <header className="flex flex-col gap-1">
-        <h1 className="text-2xl font-semibold tracking-tight">TradeRadar</h1>
-        <p className="text-sm text-muted-foreground">
-          Daily bars from the local store.
-        </p>
+      <header className="flex items-center gap-3">
+        <RadarMark />
+        <div className="flex flex-col">
+          <h1 className="font-mono text-xl font-semibold tracking-[0.14em] text-radar uppercase">
+            TradeRadar
+          </h1>
+          <p className="text-sm text-muted-foreground">
+            Daily bars from the local store.
+          </p>
+        </div>
       </header>
 
       {/* A top bar rather than a sidebar: the chart is the point of the page
-          and a sidebar would spend 300px of its width permanently. */}
-      <div className="flex flex-wrap items-center gap-x-6 gap-y-3 rounded-xl border bg-card/50 px-4 py-3">
+          and a sidebar would spend 300px of its width permanently. The period
+          control is not here - it belongs to the chart, above it. */}
+      <div className="panel flex flex-wrap items-center gap-x-6 gap-y-3 rounded-xl border px-4 py-3">
         <SymbolMultiSelect
           options={symbols}
           selected={selected}
           onChange={setSelected}
         />
 
-        <div className="ml-auto flex flex-wrap items-center gap-x-6 gap-y-3">
-          <PeriodToggle value={period} onChange={setPeriod} />
+        <div className="ml-auto flex flex-wrap items-center gap-x-5 gap-y-3">
           <ChartTypeToggle value={chartType} onChange={setChartType} />
           {/* Percent-rebased candles would be meaningless, so this control
               only exists for the line chart. */}
@@ -84,22 +87,27 @@ export default function DashboardPage() {
 
       <KpiCards summaries={summaries} />
 
-      <section className="rounded-xl border bg-card p-4">
-        <div className="mb-3 flex items-baseline justify-between gap-4">
-          <h2 className="text-sm font-medium">
-            {chartType === "candlestick"
-              ? `Candlesticks — ${selected[0] ?? "—"}`
-              : normalise
-                ? "Percent change"
-                : "Closing price"}
-          </h2>
-          <span className="text-xs text-muted-foreground">
-            {chartType === "candlestick" && selected.length > 1
-              ? "Showing the first selected symbol only"
-              : normalise
-                ? "Rebased to 0% at the start of the period"
-                : null}
-          </span>
+      <section className="panel rounded-xl border bg-card p-4">
+        <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
+          <div className="flex items-baseline gap-3">
+            <h2 className="text-sm font-medium">
+              {chartType === "candlestick"
+                ? `Candlesticks — ${selected[0] ?? "—"}`
+                : normalise
+                  ? "Percent change"
+                  : "Closing price"}
+            </h2>
+            <span className="text-xs text-muted-foreground">
+              {chartType === "candlestick" && selected.length > 1
+                ? "First selected symbol only"
+                : normalise
+                  ? "Rebased to 0% at the start of the period"
+                  : null}
+            </span>
+          </div>
+
+          {/* Scoped to the chart, so it sits with the chart. */}
+          <PeriodToggle value={period} onChange={setPeriod} />
         </div>
 
         <ChartArea

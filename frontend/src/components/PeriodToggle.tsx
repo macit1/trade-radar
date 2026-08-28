@@ -2,6 +2,7 @@
 
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { PERIOD_KEYS, type Period } from "@/lib/analytics";
+import { TOGGLE_ITEM } from "@/lib/toggleStyles";
 
 type Props = {
   value: Period;
@@ -22,7 +23,7 @@ export function PeriodToggle({ value, onChange }: Props) {
       }}
     >
       {PERIOD_KEYS.map((period) => (
-        <ToggleGroupItem key={period} value={period}>
+        <ToggleGroupItem key={period} value={period} className={TOGGLE_ITEM}>
           {period}
         </ToggleGroupItem>
       ))}

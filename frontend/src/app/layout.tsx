@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 
 import { Providers } from "@/components/providers";
@@ -9,8 +9,10 @@ const geistSans = Geist({
   subsets: ["latin"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+// Prices, changes and volumes are read as an instrument panel, so they get a
+// monospace face: digits line up column to column and never reflow as they tick.
+const jetBrainsMono = JetBrains_Mono({
+  variable: "--font-jetbrains-mono",
   subsets: ["latin"],
 });
 
@@ -25,7 +27,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     // toggle means keeping two palettes in sync - out of scope for this step.
     <html
       lang="en"
-      className={`dark ${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`dark ${geistSans.variable} ${jetBrainsMono.variable} h-full antialiased`}
     >
       <body className="min-h-full bg-background text-foreground">
         <Providers>{children}</Providers>

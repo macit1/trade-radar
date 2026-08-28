@@ -9,8 +9,12 @@ type Props = {
 
 export function NormaliseSwitch({ checked, onChange }: Props) {
   return (
-    <label className="flex cursor-pointer items-center gap-2 text-sm text-muted-foreground">
-      <Switch checked={checked} onCheckedChange={onChange} />
+    <label className="flex cursor-pointer items-center gap-2 font-mono text-xs tracking-wide text-muted-foreground transition-colors hover:text-foreground">
+      <Switch
+        checked={checked}
+        onCheckedChange={onChange}
+        className="data-checked:bg-radar"
+      />
       Normalise to %
     </label>
   );
