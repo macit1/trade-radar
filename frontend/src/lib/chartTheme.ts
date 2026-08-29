@@ -72,7 +72,7 @@ export const candlestickOptions = {
  * The accent leads: with a single symbol selected - the common case - the chart
  * is drawn in the same green as the rest of the interface.
  */
-export const LINE_COLORS = [
+const LINE_COLORS = [
   RADAR,
   "#5ab0ff",
   "#c58cff",
@@ -80,3 +80,12 @@ export const LINE_COLORS = [
   "#ff7ab8",
   "#4dd8d1",
 ];
+
+/**
+ * Colour of the nth line series. The chart canvas and the legend beside it both
+ * go through here: a legend that indexed the palette itself would drift out of
+ * step with the canvas the moment either side changed.
+ */
+export function lineColor(index: number) {
+  return LINE_COLORS[index % LINE_COLORS.length];
+}

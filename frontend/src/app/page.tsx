@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 
+import { ChartLegend } from "@/components/ChartLegend";
 import { ChartTypeToggle } from "@/components/ChartTypeToggle";
 import { KpiCards } from "@/components/KpiCards";
 import { NormaliseSwitch } from "@/components/NormaliseSwitch";
@@ -109,6 +110,15 @@ export default function DashboardPage() {
           {/* Scoped to the chart, so it sits with the chart. */}
           <PeriodToggle value={period} onChange={setPeriod} />
         </div>
+
+        {/* Only the line chart draws several series at once. A candlestick
+            chart is one symbol and already names it in the heading, and with a
+            single line the KPI card above says which symbol it is. */}
+        {chartType === "line" && selected.length > 1 && (
+          <div className="mb-3">
+            <ChartLegend symbols={selected} />
+          </div>
+        )}
 
         <ChartArea
           loading={loading}

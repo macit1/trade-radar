@@ -12,7 +12,7 @@ import {
 import { useEffect, useRef } from "react";
 
 import { candleSeriesData, lineSeriesData } from "@/lib/analytics";
-import { LINE_COLORS, candlestickOptions, chartOptions } from "@/lib/chartTheme";
+import { candlestickOptions, chartOptions, lineColor } from "@/lib/chartTheme";
 import type { ChartType, PriceBar } from "@/lib/types";
 
 type Props = {
@@ -89,7 +89,7 @@ export function PriceChart({ bars, symbols, chartType, normalise }: Props) {
     } else {
       seriesRef.current = symbols.map((symbol, index) => {
         const series = chart.addSeries(LineSeries, {
-          color: LINE_COLORS[index % LINE_COLORS.length],
+          color: lineColor(index),
           lineWidth: 2,
           priceLineVisible: false,
           lastValueVisible: false,
