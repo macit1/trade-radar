@@ -12,6 +12,7 @@ import { PriceChart } from "@/components/PriceChart";
 import { RadarMark } from "@/components/RadarMark";
 import { SummaryTable } from "@/components/SummaryTable";
 import { SymbolMultiSelect } from "@/components/SymbolMultiSelect";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import { usePrices } from "@/hooks/usePrices";
 import { useSymbols } from "@/hooks/useSymbols";
 import { applyPeriod, summarise, type Period } from "@/lib/analytics";
@@ -98,6 +99,7 @@ export default function DashboardPage() {
           {chartType === "line" && (
             <NormaliseSwitch checked={normalise} onChange={setNormalise} />
           )}
+          <ThemeToggle />
         </div>
       </div>
 

@@ -1,5 +1,6 @@
 "use client";
 
+import { useChartTheme } from "@/hooks/useChartTheme";
 import { lineColor } from "@/lib/chartTheme";
 
 type Props = {
@@ -16,6 +17,8 @@ type Props = {
  * legend has to meet it on its own terms.
  */
 export function ChartLegend({ symbols }: Props) {
+  const theme = useChartTheme();
+
   return (
     <ul className="flex flex-wrap items-center gap-x-4 gap-y-1.5">
       {symbols.map((symbol, index) => (
@@ -23,7 +26,7 @@ export function ChartLegend({ symbols }: Props) {
           <span
             aria-hidden
             className="h-0.5 w-3 rounded-full"
-            style={{ backgroundColor: lineColor(index) }}
+            style={{ backgroundColor: lineColor(index, theme) }}
           />
           <span className="font-mono text-xs text-muted-foreground">
             {symbol}

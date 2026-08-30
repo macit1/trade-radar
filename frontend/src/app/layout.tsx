@@ -23,11 +23,13 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    // Dark only for now: the chart's colours are configured in JS, so a theme
-    // toggle means keeping two palettes in sync - out of scope for this step.
+    // No theme class here: next-themes writes it onto <html> from a blocking
+    // script before first paint, so the page never flashes the wrong palette.
+    // That write is invisible to the server render, hence suppressHydrationWarning.
     <html
       lang="en"
-      className={`dark ${geistSans.variable} ${jetBrainsMono.variable} h-full antialiased`}
+      suppressHydrationWarning
+      className={`${geistSans.variable} ${jetBrainsMono.variable} h-full antialiased`}
     >
       <body className="min-h-full bg-background text-foreground">
         <Providers>{children}</Providers>

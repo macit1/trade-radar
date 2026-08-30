@@ -51,10 +51,30 @@
   --radius-4xl: calc(var(--radius) * 2.6);
 }
 
+/*
+ * Light theme. The accent is not the dark theme's colour on a white ground:
+ * the phosphor green reads at 1.8:1 against white, which is unusable for the
+ * change figures it colours. The values below were measured, not eyeballed -
+ * --radar is 5.1:1 and --loss 5.8:1 against white, both past WCAG AA's 4.5:1
+ * for body text. Same hues, darker and slightly less chromatic.
+ */
 :root {
-  --radar: oklch(0.8 0.155 152);
-  --radar-dim: oklch(0.62 0.09 152);
-  --loss: oklch(0.68 0.17 22);
+  --radar: oklch(0.525 0.13 152);
+  --radar-dim: oklch(0.62 0.075 152);
+  --loss: oklch(0.53 0.19 22);
+
+  /*
+   * Panel definition is one effect with two settings. On black a faint tint
+   * plus a lit top edge reads as depth; on white the same numbers vanish, so
+   * light leans on the border instead and keeps the fill nearly clean.
+   */
+  --panel-border: 32%;
+  --panel-tint: 3%;
+  --panel-edge: 30%;
+  /* The sweep is a wedge of accent over the page. On white it needs to be
+     denser than on black to read as a sweep rather than a smudge. */
+  --sweep-strength: 70%;
+
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
@@ -90,6 +110,16 @@
 }
 
 .dark {
+  /* The original night-vision palette, unchanged. */
+  --radar: oklch(0.8 0.155 152);
+  --radar-dim: oklch(0.62 0.09 152);
+  --loss: oklch(0.68 0.17 22);
+
+  --panel-border: 12%;
+  --panel-tint: 4%;
+  --panel-edge: 45%;
+  --sweep-strength: 55%;
+
   --background: oklch(0.145 0 0);
   --foreground: oklch(0.985 0 0);
   --card: oklch(0.205 0 0);
@@ -158,10 +188,10 @@
  */
 .panel {
   position: relative;
-  border-color: color-mix(in oklab, var(--radar) 12%, transparent);
+  border-color: color-mix(in oklab, var(--radar) var(--panel-border), transparent);
   background-image: linear-gradient(
     to bottom,
-    color-mix(in oklab, var(--radar) 4%, transparent),
+    color-mix(in oklab, var(--radar) var(--panel-tint), transparent),
     transparent 40%
   );
 }
@@ -175,7 +205,7 @@
   background: linear-gradient(
     to right,
     transparent,
-    color-mix(in oklab, var(--radar) 45%, transparent),
+    color-mix(in oklab, var(--radar) var(--panel-edge), transparent),
     transparent
   );
 }

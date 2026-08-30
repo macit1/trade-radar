@@ -11,6 +11,7 @@ import {
 } from "lightweight-charts";
 import { useEffect, useRef } from "react";
 
+import { useChartTheme } from "@/hooks/useChartTheme";
 import { candleSeriesData, lineSeriesData } from "@/lib/analytics";
 import { candlestickOptions, chartOptions, lineColor } from "@/lib/chartTheme";
 import type { ChartType, PriceBar } from "@/lib/types";
@@ -37,6 +38,8 @@ export function PriceChart({
   normalise,
   candleSymbol,
 }: Props) {
+  const theme = useChartTheme();
+
   const containerRef = useRef<HTMLDivElement>(null);
   const chartRef = useRef<IChartApi | null>(null);
   const seriesRef = useRef<ISeriesApi<SeriesType>[]>([]);
@@ -47,8 +50,11 @@ export function PriceChart({
     const container = containerRef.current;
     if (!container) return;
 
+    // Size only, no palette: depending on the theme here would rebuild the
+    // chart on every toggle and throw away the viewer's zoom and pan. The
+    // effect below paints it, and effects in one commit all run before the
+    // browser paints - so the chart is never seen in the default colours.
     const chart = createChart(container, {
-      ...chartOptions,
       width: container.clientWidth,
       height: container.clientHeight,
     });
@@ -70,6 +76,12 @@ export function PriceChart({
     };
   }, []);
 
+  // Axes, grid and crosshair are chart-level options, so a theme change is an
+  // applyOptions call - no teardown, and the series below are left alone.
+  useEffect(() => {
+    chartRef.current?.applyOptions(chartOptions(theme));
+  }, [theme]);
+
   // Rebuild the series when the data, symbols, chart type or scaling change.
   // Creating a series and filling it are one step on purpose: a separate effect
   // for setData would leave a frame where an empty series is already attached.
@@ -85,7 +97,10 @@ export function PriceChart({
       // symbol is drawn - the one the page's picker resolved.
       if (!candleSymbol) return;
 
-      const series = chart.addSeries(CandlestickSeries, candlestickOptions);
+      const series = chart.addSeries(
+        CandlestickSeries,
+        candlestickOptions(theme),
+      );
       series.setData(
         candleSeriesData(bars, candleSymbol).map((bar) => ({
           ...bar,
@@ -96,7 +111,7 @@ export function PriceChart({
     } else {
       seriesRef.current = symbols.map((symbol, index) => {
         const series = chart.addSeries(LineSeries, {
-          color: lineColor(index),
+          color: lineColor(index, theme),
           lineWidth: 2,
           priceLineVisible: false,
           lastValueVisible: false,
@@ -118,7 +133,9 @@ export function PriceChart({
     }
 
     chart.timeScale().fitContent();
-  }, [bars, symbols, chartType, normalise, candleSymbol]);
+    // `theme` belongs here too: series colours are baked in at creation, so a
+    // toggle has to rebuild them the way a data change does.
+  }, [bars, symbols, chartType, normalise, candleSymbol, theme]);
 
   return <div ref={containerRef} className="h-[440px] w-full" />;
 }
