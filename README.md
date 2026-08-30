@@ -88,17 +88,33 @@ Two chart types:
 Run `python main.py --output sql` first; on an empty database the dashboard says
 so instead of failing.
 
+## Tests
+
+```bash
+pip install -e ".[dev]"
+pytest
+```
+
+Unit tests over the validation rules, the storage sinks and read queries, the
+Yahoo response parsing, and the two API endpoints. Every rule has a passing and
+a failing case, and every threshold is probed on both sides of its boundary.
+
+No test reaches the network: `requests` is blocked at the adapter for the whole
+suite, so a forgotten mock fails the test instead of quietly calling Yahoo.
+
 ## Layout
 
 ```
 main.py               CLI entry point and run loop
 config.yaml           symbols, interval, range, sink paths
 pyproject.toml        package metadata and dependencies (source of truth)
+tests/                pytest suite (see Tests above)
 traderadar/
   __init__.py         package marker
   fetcher.py          Yahoo Finance chart endpoint -> DataFrame
   storage.py          database access: write sinks (csv, sql) + read queries
   utils.py            config loading, inspection report
+  validation.py       post-fetch data checks, severities, exit codes
 backend/
   __init__.py         package marker
   main.py             FastAPI app: /symbols and /prices, read-only
