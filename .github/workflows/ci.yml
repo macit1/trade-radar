@@ -1,0 +1,49 @@
+name: CI
+
+# Every push and every PR on the two long-lived branches. `feature/*` work is
+# covered through its pull request, so a branch nobody has opened a PR for does
+# not burn minutes.
+on:
+  push:
+    branches: [development, main]
+  pull_request:
+    branches: [development, main]
+
+# A new push supersedes the run before it on the same ref.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  backend-ci:
+    name: backend-ci
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          # Matches requires-python in pyproject.toml. One version on purpose:
+          # nothing here is version-sensitive yet, and a matrix would triple the
+          # runs for no signal.
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: pyproject.toml
+
+      - name: Install
+        run: pip install -e ".[dev]"
+
+      # Lint and format are separate steps so a red run says which one failed
+      # without opening the log.
+      - name: Lint
+        run: ruff check .
+
+      - name: Format
+        run: ruff format --check .
+
+      - name: Test
+        run: pytest
