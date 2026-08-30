@@ -18,14 +18,18 @@ permissions:
   contents: read
 
 jobs:
+  # The job id stays `backend-ci`; the display name below is what GitHub uses
+  # as the status check context, so branch protection asks for that string.
   backend-ci:
-    name: backend-ci
+    name: Backend Tests & Lint
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-      - uses: actions/setup-python@v5
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
           # Matches requires-python in pyproject.toml. One version on purpose:
           # nothing here is version-sensitive yet, and a matrix would triple the
@@ -34,16 +38,16 @@ jobs:
           cache: pip
           cache-dependency-path: pyproject.toml
 
-      - name: Install
+      - name: Install dependencies
         run: pip install -e ".[dev]"
 
       # Lint and format are separate steps so a red run says which one failed
       # without opening the log.
-      - name: Lint
+      - name: Lint (ruff check)
         run: ruff check .
 
-      - name: Format
+      - name: Format check (ruff format)
         run: ruff format --check .
 
-      - name: Test
+      - name: Run tests
         run: pytest
