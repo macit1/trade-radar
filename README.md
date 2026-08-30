@@ -33,14 +33,23 @@ overrides them. `output` takes a single sink (`output: sql`) or a list
 Each symbol is fetched from Yahoo exactly once no matter how many sinks are
 selected.
 
-## Dashboard
+## API and dashboard
 
 ```bash
-streamlit run traderadar/dashboard.py
+uvicorn backend.main:app --reload      # http://127.0.0.1:8000  (docs at /docs)
+cd frontend && npm run dev             # http://localhost:3000
 ```
 
-Reads the SQLite store directly - no export step. Pick symbols and a period in
-the sidebar to get KPI cards, a price chart and a table of the latest bar.
+The API serves `GET /symbols` and `GET /prices?symbols=MSFT&symbols=NVDA`
+straight from SQLite - no export step. The Next.js dashboard reads those two
+endpoints and draws the charts with `lightweight-charts`. Copy
+`frontend/.env.example` to `frontend/.env.local` to point the frontend at a
+different API host.
+
+Pick symbols in the top bar and a period above the chart to get KPI cards, a
+price chart and a table of the latest bar per symbol. `/prices` returns full
+history, so period, chart type and normalisation are all local recomputations -
+switching them costs no request.
 
 Two chart types:
 
@@ -54,22 +63,6 @@ Two chart types:
 Run `python main.py --output sql` first; on an empty database the dashboard says
 so instead of failing.
 
-## API and web dashboard
-
-```bash
-uvicorn backend.main:app --reload      # http://127.0.0.1:8000  (docs at /docs)
-cd frontend && npm run dev             # http://localhost:3000
-```
-
-The API serves `GET /symbols` and `GET /prices?symbols=MSFT&symbols=NVDA`
-straight from SQLite. The Next.js dashboard reads those two endpoints and draws
-either a multi-symbol line chart or candlesticks for a single symbol, using
-`lightweight-charts`. Copy `frontend/.env.example` to `frontend/.env.local` to
-point the frontend at a different API host.
-
-The Streamlit dashboard still works and is unchanged; it is retired only once
-the web version reaches parity.
-
 ## Layout
 
 ```
@@ -80,15 +73,14 @@ traderadar/
   fetcher.py          Yahoo Finance chart endpoint -> DataFrame
   storage.py          database access: write sinks (csv, sql) + read queries
   utils.py            config loading, inspection report
-  dashboard.py        Streamlit dashboard, separate entry point (read-only)
 backend/
   main.py             FastAPI app: /symbols and /prices, read-only
 frontend/             Next.js + Tailwind + shadcn/ui dashboard
 data/                 sqlite database and raw CSVs (gitignored)
 ```
 
-`main.py` writes, `traderadar/dashboard.py` reads, and neither imports the
-other - they only share `traderadar/storage.py` and `config.yaml`.
+`main.py` writes and `backend/main.py` reads; neither imports the other -
+they only share `traderadar/storage.py` and `config.yaml`.
 
 ## Data
 

@@ -2,8 +2,6 @@
 # pyproject.toml is the source of truth - edit there first, mirror here.
 fastapi>=0.115
 pandas>=2.2
-plotly>=5.24
 PyYAML>=6.0
 requests>=2.32
-streamlit>=1.40
 uvicorn[standard]>=0.30

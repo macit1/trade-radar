@@ -2,9 +2,9 @@
 
 Run with:  uvicorn backend.main:app --reload
 
-Read-only, like the Streamlit dashboard: it never fetches from Yahoo. All
-database access goes through traderadar.storage, so no connection logic or SQL
-lives here.
+Read-only: it never fetches from Yahoo, that is the CLI's job. All database
+access goes through traderadar.storage, so no connection logic or SQL lives
+here.
 """
 
 from functools import lru_cache
