@@ -18,10 +18,13 @@ permissions:
   contents: read
 
 jobs:
-  # The job id stays `backend-ci`; the display name below is what GitHub uses
-  # as the status check context, so branch protection asks for that string.
+  # The display name is deliberately identical to the job id: GitHub uses the
+  # *name* as the status check context, and branch protection on development
+  # requires `backend-ci`. Renaming this line silently blocks every PR, because
+  # the check it waits for stops being reported. Change the protection rule
+  # first if this ever needs a friendlier name.
   backend-ci:
-    name: Backend Tests & Lint
+    name: backend-ci
     runs-on: ubuntu-latest
 
     steps:
