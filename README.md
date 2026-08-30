@@ -70,10 +70,12 @@ main.py               CLI entry point and run loop
 config.yaml           symbols, interval, range, sink paths
 pyproject.toml        package metadata and dependencies (source of truth)
 traderadar/
+  __init__.py         package marker
   fetcher.py          Yahoo Finance chart endpoint -> DataFrame
   storage.py          database access: write sinks (csv, sql) + read queries
   utils.py            config loading, inspection report
 backend/
+  __init__.py         package marker
   main.py             FastAPI app: /symbols and /prices, read-only
 frontend/             Next.js + Tailwind + shadcn/ui dashboard
 data/                 sqlite database and raw CSVs (gitignored)
