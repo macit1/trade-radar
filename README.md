@@ -4,7 +4,9 @@ Daily stock/crypto price tracker. Pulls OHLCV bars from Yahoo Finance and writes
 them to one or more sinks you pick at run time: CSV files, a SQLite database, or
 both from a single fetch.
 
-No order execution, no brokerage integration.
+No order execution, no brokerage integration. Not investment advice: this is a
+learning project for the pipeline around market data, not for the data's
+conclusions. Figures come from an unofficial source and carry no warranty.
 
 ## Setup
 
@@ -118,7 +120,7 @@ traderadar/
 backend/
   __init__.py         package marker
   main.py             FastAPI app: /symbols and /prices, read-only
-frontend/             Next.js + Tailwind + shadcn/ui dashboard
+frontend/             Next.js + Tailwind + shadcn/ui dashboard (see above)
 data/                 sqlite database and raw CSVs (gitignored)
 ```
 
@@ -127,8 +129,13 @@ they only share `traderadar/storage.py` and `config.yaml`.
 
 ## Data
 
-`https://query1.finance.yahoo.com/v8/finance/chart/{SYMBOL}` - unofficial, no API
-key. Interval limits: `1d` unlimited, `1h` ~2 years, `5m` 60 days, `1m` 8 days.
+`https://query1.finance.yahoo.com/v8/finance/chart/{SYMBOL}` - an unofficial
+endpoint. No API key, no published contract, no stability guarantee: it can
+change or stop answering without notice, and the request sends a browser
+`User-Agent` because a bare client is answered differently. If it breaks, that
+is the first thing to check - the stored data is probably fine.
+
+Interval limits: `1d` unlimited, `1h` ~2 years, `5m` 60 days, `1m` 8 days.
 Never pass `range=max` - it silently ignores `interval` and returns monthly bars.
 
 SQLite schema:
@@ -142,3 +149,7 @@ CREATE TABLE prices (
 ```
 
 Re-running is safe: rows are upserted on `(symbol, date)`, never duplicated.
+
+## License
+
+MIT - see [LICENSE](LICENSE).
