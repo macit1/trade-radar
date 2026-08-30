@@ -104,12 +104,23 @@ a failing case, and every threshold is probed on both sides of its boundary.
 No test reaches the network: `requests` is blocked at the adapter for the whole
 suite, so a forgotten mock fails the test instead of quietly calling Yahoo.
 
+## Architecture
+
+[`docs/architecture.html`](docs/architecture.html) is a standalone runtime map -
+Yahoo Finance to the CLI, the SQLite store, the API and the dashboard, with the
+primary data flow and the detail behind each component. Download it and open it
+in a browser; it needs nothing else. `docs/architecture.json` is the spec it is
+generated from, pinned to the commit it describes.
+
 ## Layout
 
 ```
 main.py               CLI entry point and run loop
 config.yaml           symbols, interval, range, sink paths
 pyproject.toml        package metadata and dependencies (source of truth)
+docs/
+  architecture.html   runtime architecture diagram (open it in a browser)
+  architecture.json   the spec it is generated from
 tests/                pytest suite (see Tests above)
 traderadar/
   __init__.py         package marker
