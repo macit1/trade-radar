@@ -12,3 +12,12 @@ range: 3y                 # 1d,5d,1mo
 output: [csv,sql]         # sink list: csv, sql, or both. A single string (output: sql) still works. CLI --output overrides.
 csv_path: data/raw        # used when output = csv
 db_path: data/traderadar.db   # used when output = sql
+
+validation:                 # thresholds for the post-fetch checks; all optional
+  gap_trading_days: 3       # sessions that may be missing between two bars
+  stale_warn_days: 2        # newest bar this far behind the market -> warning
+  stale_fail_days: 5        # ... this far behind -> error
+  coverage_tolerance: 0.05  # share of sessions that may be missing overall
+  extreme_move_pct: 25.0    # close-to-close move worth a human look
+  flat_bar_tolerance_pct: 0.01  # high/low agreement that counts as a flat bar
+  max_samples: 5            # dates printed per finding before the rest are counted

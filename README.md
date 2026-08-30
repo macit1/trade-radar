@@ -33,6 +33,31 @@ overrides them. `output` takes a single sink (`output: sql`) or a list
 Each symbol is fetched from Yahoo exactly once no matter how many sinks are
 selected.
 
+## Validation
+
+Every fetch is followed by a validation pass over the stored bars, so bad or
+incomplete data surfaces immediately instead of sitting silently in SQLite.
+
+```bash
+python main.py --validate-only      # check what is stored, no fetching
+python main.py --no-validate        # fetch without the check
+python main.py --strict             # warnings fail the run too (for CI)
+```
+
+Findings carry a severity. An **error** is data that cannot be right - a broken
+`high`/`low`, a duplicate key, a bar on a day the market was closed, a symbol
+that is configured but missing. A **warning** is data a real market can produce
+but a human should look at - a gap in the history, a 25% move, a zero-volume
+session, bars that are stale by a couple of sessions.
+
+The exit code is what a pipeline reads: `0` clean (warnings allowed), `1` when
+any error fired, when a fetch failed, or when `--strict` is on and a warning
+fired. Thresholds live under `validation:` in `config.yaml`.
+
+Gaps and staleness are counted in trading sessions on the US equity calendar,
+not calendar days, so a long weekend or a holiday is never mistaken for missing
+data. Every configured symbol is assumed to trade on that calendar.
+
 ## API and dashboard
 
 ```bash
