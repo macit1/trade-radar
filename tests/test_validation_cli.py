@@ -119,7 +119,9 @@ def test_remaining_rows_are_still_checked_after_a_bad_date(config):
 
 
 def report_with(*findings):
-    report = validate_store.__globals__["Report"](db_path="x", asof=pd.Timestamp("2026-08-28"))
+    report = validate_store.__globals__["Report"](
+        db_path="x", asof=pd.Timestamp("2026-08-28")
+    )
     report.cross_findings = list(findings)
     return report
 
@@ -142,7 +144,9 @@ def test_exit_code_matrix(findings, strict, expected):
 def test_status_reflects_the_worst_finding():
     assert report_with().status == "PASS"
     assert report_with(Finding("r", WARNING, "s")).status == "WARN"
-    assert report_with(Finding("r", WARNING, "s"), Finding("r", ERROR, "s")).status == "FAIL"
+    assert (
+        report_with(Finding("r", WARNING, "s"), Finding("r", ERROR, "s")).status == "FAIL"
+    )
 
 
 def test_report_renders_findings_and_the_summary(config):

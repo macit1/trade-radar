@@ -16,14 +16,14 @@ from tests.conftest import sessions, stored_frame
 from traderadar import validation
 from traderadar.validation import (
     ERROR,
-    WARNING,
     SYMBOL_RULES,
+    WARNING,
     _check_calendar_drift,
+    _check_coverage,
     _check_duplicate_dates,
+    _check_extreme_moves,
     _check_flat_and_volume,
     _check_gaps,
-    _check_coverage,
-    _check_extreme_moves,
     _check_missing_values,
     _check_ohlc_invariants,
     _check_price_domain,

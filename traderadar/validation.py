@@ -146,7 +146,9 @@ class Report:
 
     @property
     def all_findings(self):
-        return [f for report in self.symbols for f in report.findings] + self.cross_findings
+        return [
+            f for report in self.symbols for f in report.findings
+        ] + self.cross_findings
 
     def count(self, severity):
         return sum(1 for finding in self.all_findings if finding.severity == severity)
@@ -249,7 +251,9 @@ def _check_ohlc_invariants(frame, settings):
     body_high = frame[["open", "close"]].max(axis=1)
     body_low = frame[["open", "close"]].min(axis=1)
     broken = frame[
-        (frame["high"] < body_high) | (frame["low"] > body_low) | (frame["high"] < frame["low"])
+        (frame["high"] < body_high)
+        | (frame["low"] > body_low)
+        | (frame["high"] < frame["low"])
     ]
     if broken.empty:
         return []
@@ -322,7 +326,9 @@ def _check_gaps(frame, settings):
         samples.append(f"(+{len(holes) - len(samples)} more)")
 
     return [
-        Finding("calendar-gap", WARNING, f"{len(holes)} gaps in the stored history", samples)
+        Finding(
+            "calendar-gap", WARNING, f"{len(holes)} gaps in the stored history", samples
+        )
     ]
 
 
@@ -541,7 +547,9 @@ def validate_store(config, symbols=None, asof=None):
     frames = {}
 
     for symbol in wanted:
-        frame = stored[stored["symbol"] == symbol].sort_values("date").reset_index(drop=True)
+        frame = (
+            stored[stored["symbol"] == symbol].sort_values("date").reset_index(drop=True)
+        )
 
         # A row whose date did not parse is corruption in the key itself, and it
         # would turn every date calculation below into NaT. Report it, then work

@@ -84,8 +84,16 @@ def test_timestamps_are_converted_to_the_exchange_calendar(mock_yahoo, yahoo_pay
     Keeping UTC would file some bars under the wrong session, so the exchange
     timezone from the payload decides the date.
     """
-    mock_yahoo(yahoo_payload(timestamps=(1756166400,), opens=(1.0,), highs=(2.0,),
-                             lows=(0.5,), closes=(1.5,), volumes=(10,)))
+    mock_yahoo(
+        yahoo_payload(
+            timestamps=(1756166400,),
+            opens=(1.0,),
+            highs=(2.0,),
+            lows=(0.5,),
+            closes=(1.5,),
+            volumes=(10,),
+        )
+    )
 
     frame = fetch_prices("TEST", "3y", "1d")
 
@@ -106,8 +114,16 @@ def test_dates_carry_no_timezone(mock_yahoo, yahoo_payload):
 
 
 def test_intraday_intervals_keep_their_time(mock_yahoo, yahoo_payload):
-    mock_yahoo(yahoo_payload(timestamps=(1756215000,), opens=(1.0,), highs=(2.0,),
-                             lows=(0.5,), closes=(1.5,), volumes=(10,)))
+    mock_yahoo(
+        yahoo_payload(
+            timestamps=(1756215000,),
+            opens=(1.0,),
+            highs=(2.0,),
+            lows=(0.5,),
+            closes=(1.5,),
+            volumes=(10,),
+        )
+    )
 
     frame = fetch_prices("TEST", "5d", "1h")
 
