@@ -10,6 +10,7 @@ import { NormaliseSwitch } from "@/components/NormaliseSwitch";
 import { PeriodToggle } from "@/components/PeriodToggle";
 import { PriceChart } from "@/components/PriceChart";
 import { RadarMark } from "@/components/RadarMark";
+import { SummaryTable } from "@/components/SummaryTable";
 import { SymbolMultiSelect } from "@/components/SymbolMultiSelect";
 import { usePrices } from "@/hooks/usePrices";
 import { useSymbols } from "@/hooks/useSymbols";
@@ -159,6 +160,10 @@ export default function DashboardPage() {
           />
         </ChartArea>
       </section>
+
+      {/* Below the chart: the chart is what the page is for, and the table
+          repeats its window rather than adding a filter of its own. */}
+      <SummaryTable summaries={summaries} />
     </main>
   );
 }
