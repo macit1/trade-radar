@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 
+import { CandleSymbolToggle } from "@/components/CandleSymbolToggle";
 import { ChartLegend } from "@/components/ChartLegend";
 import { ChartTypeToggle } from "@/components/ChartTypeToggle";
 import { KpiCards } from "@/components/KpiCards";
@@ -22,6 +23,7 @@ export default function DashboardPage() {
   const [period, setPeriod] = useState<Period>("All");
   const [chartType, setChartType] = useState<ChartType>("line");
   const [normalise, setNormalise] = useState(false);
+  const [candleSymbol, setCandleSymbol] = useState<string | null>(null);
 
   const symbolsQuery = useSymbols();
   const pricesQuery = usePrices(selected);
@@ -48,6 +50,18 @@ export default function DashboardPage() {
   );
 
   const summaries = useMemo(() => summarise(bars, selected), [bars, selected]);
+
+  // The candlestick symbol is derived rather than kept in sync by an effect:
+  // once it is dropped from the selection - or nothing has been picked yet - the
+  // first selected symbol stands in, and the stored choice simply stops
+  // applying without a second render pass to correct it.
+  const activeCandleSymbol = useMemo(
+    () =>
+      candleSymbol && selected.includes(candleSymbol)
+        ? candleSymbol
+        : (selected[0] ?? null),
+    [candleSymbol, selected],
+  );
 
   const error = symbolsQuery.error ?? pricesQuery.error;
   const loading = symbolsQuery.isLoading || pricesQuery.isFetching;
@@ -93,22 +107,31 @@ export default function DashboardPage() {
           <div className="flex items-baseline gap-3">
             <h2 className="text-sm font-medium">
               {chartType === "candlestick"
-                ? `Candlesticks — ${selected[0] ?? "—"}`
+                ? `Candlesticks — ${activeCandleSymbol ?? "—"}`
                 : normalise
                   ? "Percent change"
                   : "Closing price"}
             </h2>
             <span className="text-xs text-muted-foreground">
-              {chartType === "candlestick" && selected.length > 1
-                ? "First selected symbol only"
-                : normalise
-                  ? "Rebased to 0% at the start of the period"
-                  : null}
+              {chartType === "line" && normalise
+                ? "Rebased to 0% at the start of the period"
+                : null}
             </span>
           </div>
 
-          {/* Scoped to the chart, so it sits with the chart. */}
-          <PeriodToggle value={period} onChange={setPeriod} />
+          {/* Both controls are scoped to the chart, so they sit with it. With a
+              single symbol selected the picker would have nothing to choose
+              between - the heading already names it. */}
+          <div className="flex flex-wrap items-center gap-3">
+            {chartType === "candlestick" && selected.length > 1 && (
+              <CandleSymbolToggle
+                options={selected}
+                value={activeCandleSymbol}
+                onChange={setCandleSymbol}
+              />
+            )}
+            <PeriodToggle value={period} onChange={setPeriod} />
+          </div>
         </div>
 
         {/* Only the line chart draws several series at once. A candlestick
@@ -132,6 +155,7 @@ export default function DashboardPage() {
             symbols={selected}
             chartType={chartType}
             normalise={normalise}
+            candleSymbol={activeCandleSymbol}
           />
         </ChartArea>
       </section>

@@ -20,6 +20,8 @@ type Props = {
   symbols: string[];
   chartType: ChartType;
   normalise: boolean;
+  /** Which symbol the candlestick chart draws; ignored by the line chart. */
+  candleSymbol: string | null;
 };
 
 /**
@@ -28,7 +30,13 @@ type Props = {
  * state, and the work is split across two effects with different dependencies
  * so that a data change never tears down the chart itself.
  */
-export function PriceChart({ bars, symbols, chartType, normalise }: Props) {
+export function PriceChart({
+  bars,
+  symbols,
+  chartType,
+  normalise,
+  candleSymbol,
+}: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
   const chartRef = useRef<IChartApi | null>(null);
   const seriesRef = useRef<ISeriesApi<SeriesType>[]>([]);
@@ -73,14 +81,13 @@ export function PriceChart({ bars, symbols, chartType, normalise }: Props) {
     seriesRef.current = [];
 
     if (chartType === "candlestick") {
-      // Candles from several symbols on one axis are unreadable, so only the
-      // first selected symbol is drawn.
-      const symbol = symbols[0];
-      if (!symbol) return;
+      // Candles from several symbols on one axis are unreadable, so exactly one
+      // symbol is drawn - the one the page's picker resolved.
+      if (!candleSymbol) return;
 
       const series = chart.addSeries(CandlestickSeries, candlestickOptions);
       series.setData(
-        candleSeriesData(bars, symbol).map((bar) => ({
+        candleSeriesData(bars, candleSymbol).map((bar) => ({
           ...bar,
           time: bar.time as Time,
         })),
@@ -111,7 +118,7 @@ export function PriceChart({ bars, symbols, chartType, normalise }: Props) {
     }
 
     chart.timeScale().fitContent();
-  }, [bars, symbols, chartType, normalise]);
+  }, [bars, symbols, chartType, normalise, candleSymbol]);
 
   return <div ref={containerRef} className="h-[440px] w-full" />;
 }
