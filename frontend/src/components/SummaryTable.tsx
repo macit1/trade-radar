@@ -1,5 +1,6 @@
 "use client";
 
+import { Sparkline } from "@/components/Sparkline";
 import { SymbolBadge } from "@/components/SymbolBadge";
 import type { SymbolSummary } from "@/lib/analytics";
 import {
@@ -20,9 +21,11 @@ import { cn } from "@/lib/utils";
 type Props = {
   summaries: SymbolSummary[];
   slots: Record<string, number>;
+  /** Closing prices per symbol for the trend column, oldest first. */
+  trends: Record<string, number[]>;
 };
 
-export function SummaryTable({ summaries, slots }: Props) {
+export function SummaryTable({ summaries, slots, trends }: Props) {
   if (summaries.length === 0) return null;
 
   return (
@@ -32,10 +35,16 @@ export function SummaryTable({ summaries, slots }: Props) {
       {/* Seven columns do not fit a phone; the table scrolls rather than
           wrapping figures onto two lines. */}
       <div className="overflow-x-auto">
-        <table className="w-full min-w-[640px] border-collapse font-mono text-sm tabular-nums">
+        <table className="w-full min-w-[720px] border-collapse font-mono text-sm tabular-nums">
           <thead>
             <tr className="border-b text-xs tracking-wide text-muted-foreground uppercase">
               <Th align="left">Symbol</Th>
+              {/* Hidden rather than shrunk below md: a 72px line squeezed into
+                  a phone column stops being readable as a shape at all, and
+                  every figure it summarises is still in the row. */}
+              <Th align="left" className="hidden md:table-cell">
+                Trend
+              </Th>
               <Th align="left">Date</Th>
               <Th>Close</Th>
               <Th>Change</Th>
@@ -50,6 +59,7 @@ export function SummaryTable({ summaries, slots }: Props) {
                 key={summary.symbol}
                 summary={summary}
                 slot={slots[summary.symbol]}
+                trend={trends[summary.symbol] ?? []}
               />
             ))}
           </tbody>
@@ -62,9 +72,11 @@ export function SummaryTable({ summaries, slots }: Props) {
 function Th({
   children,
   align = "right",
+  className,
 }: {
   children: React.ReactNode;
   align?: "left" | "right";
+  className?: string;
 }) {
   return (
     <th
@@ -72,6 +84,7 @@ function Th({
       className={cn(
         "px-3 py-2 font-medium",
         align === "left" ? "text-left" : "text-right",
+        className,
       )}
     >
       {children}
@@ -82,9 +95,11 @@ function Th({
 function Row({
   summary,
   slot,
+  trend,
 }: {
   summary: SymbolSummary;
   slot: number | undefined;
+  trend: number[];
 }) {
   const { change } = summary;
   const up = change !== null && change >= 0;
@@ -101,6 +116,9 @@ function Row({
           <SymbolBadge symbol={summary.symbol} slot={slot} />
           {summary.symbol}
         </span>
+      </td>
+      <td className="hidden px-3 py-2 md:table-cell">
+        <Sparkline values={trend} />
       </td>
       <td className="px-3 py-2 text-muted-foreground">{summary.date}</td>
       <td className="px-3 py-2 text-right">{formatPrice(summary.close)}</td>

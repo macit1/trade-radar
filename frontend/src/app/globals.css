@@ -219,6 +219,27 @@
 }
 
 /*
+ * The trend lines draw themselves in once. `pathLength={1}` on the polyline
+ * normalises the stroke, so one rule covers every line whatever its real
+ * length. The global reduced-motion guard above collapses this to 0.01ms,
+ * which lands on a fully drawn line - the correct final state, not a
+ * half-drawn one.
+ */
+@keyframes sparkline-draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.sparkline-draw {
+  stroke-dasharray: 1;
+  animation: sparkline-draw 0.45s ease-out both;
+}
+
+/*
  * Cards are otherwise flat rectangles on a flat background. A hairline in the
  * brand plus a single lit edge along the top gives them definition without a
  * neon glow, which would compete with the numbers.

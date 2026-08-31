@@ -16,7 +16,12 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 import { TickerSearch } from "@/components/TickerSearch";
 import { usePrices } from "@/hooks/usePrices";
 import { useSymbols } from "@/hooks/useSymbols";
-import { applyPeriod, summarise, type Period } from "@/lib/analytics";
+import {
+  applyPeriod,
+  sparklineSeries,
+  summarise,
+  type Period,
+} from "@/lib/analytics";
 import { buildBadgeSlots } from "@/lib/symbolBadge";
 import type { ChartType } from "@/lib/types";
 
@@ -59,6 +64,16 @@ export default function DashboardPage() {
   );
 
   const summaries = useMemo(() => summarise(bars, selected), [bars, selected]);
+
+  // Cut from the same `bars` the summaries are, so the trend line and the
+  // figures beside it describe one window rather than two.
+  const trends = useMemo(
+    () =>
+      Object.fromEntries(
+        selected.map((symbol) => [symbol, sparklineSeries(bars, symbol)]),
+      ),
+    [bars, selected],
+  );
 
   // The candlestick symbol is derived rather than kept in sync by an effect:
   // once it is dropped from the selection - or nothing has been picked yet - the
@@ -183,7 +198,11 @@ export default function DashboardPage() {
 
       {/* Below the chart: the chart is what the page is for, and the table
           repeats its window rather than adding a filter of its own. */}
-      <SummaryTable summaries={summaries} slots={badgeSlots} />
+      <SummaryTable
+        summaries={summaries}
+        slots={badgeSlots}
+        trends={trends}
+      />
     </main>
   );
 }
