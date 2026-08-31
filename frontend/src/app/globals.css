@@ -76,11 +76,12 @@
  */
 :root {
   /*
-   * Amber reads 2.1:1 on white, so light mode takes the same hue several steps
-   * darker rather than the same hex. Likewise teal and red.
+   * Launch blue reads 3.4:1 on white at its dark-mode value, so light mode
+   * takes the same hue several steps darker rather than the same hex. Likewise
+   * teal and red.
    */
-  --brand: #b45309; /* 5.1:1 on the page */
-  --brand-dim: #92400e;
+  --brand: #1d4ed8; /* 6.4:1 on the page */
+  --brand-dim: #1e40af;
   --gain: #115e59; /* 5.6:1 */
   --loss: #b91c1c; /* 5.0:1 */
 
@@ -113,13 +114,15 @@
   --destructive: #b91c1c;
   --border: #e2e8f0;
   --input: #e2e8f0;
-  --ring: #b45309;
+  --ring: #1d4ed8;
   --radius: 0.5rem;
 }
 
 .dark {
-  --brand: #f59e0b; /* 7.0:1 on the card */
-  --brand-dim: #b45309;
+  /* Not #3b82f6: blue-500 is 4.0:1 against the card and misses AA. One step
+     lighter clears it at 5.9:1. */
+  --brand: #60a5fa;
+  --brand-dim: #3b82f6;
   --gain: #2dd4bf; /* 8.0:1 */
   /*
    * Not #ef4444: that is 4.0:1 against the card and fails AA for the change
@@ -153,7 +156,7 @@
   --destructive: #f87171;
   --border: #334155;
   --input: #3b475c;
-  --ring: #f59e0b;
+  --ring: #60a5fa;
 }
 
 @layer base {

@@ -17,7 +17,7 @@ import {
   candlestickOptions,
   chartOptions,
   lineColor,
-  lineStyle,
+  lineWidth,
 } from "@/lib/chartTheme";
 import type { ChartType, PriceBar } from "@/lib/types";
 
@@ -125,8 +125,7 @@ export function PriceChart({
       seriesRef.current = symbols.map((symbol, index) => {
         const series = chart.addSeries(LineSeries, {
           color: lineColor(index, theme),
-          lineStyle: lineStyle(index).canvas,
-          lineWidth: 2,
+          lineWidth: lineWidth(index),
           priceLineVisible: false,
           lastValueVisible: false,
           // Normalised values are percentages, so the axis has to say so.

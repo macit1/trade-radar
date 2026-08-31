@@ -55,12 +55,18 @@ separately — never the dark values inverted.
 | Border | `#334155` | |
 | Foreground | `#F8FAFC` | |
 | Muted foreground | `#94A3B8` | |
-| **Brand / primary** | `#F59E0B` | amber. The instrument-panel colour |
-| Secondary | `#FBBF24` | |
+| **Brand / primary** | `#60A5FA` | launch blue. Light mode uses `#1D4ED8` — the same hue several steps darker, because the dark value is 3.4:1 on white |
+| Secondary | `#3B82F6` | |
 | Accent | `#8B5CF6` | violet, sparingly — one CTA per view at most |
 | Destructive | `#EF4444` | |
 
-*Palette note from the source data: "Gold trust + purple tech".*
+*Source: the Space Tech / Aerospace record — "Star white + launch blue". An
+earlier amber (`#F59E0B`, "Gold trust + purple tech") was tried and rejected.*
+
+Blue was chosen over indigo because indigo sits too close to the violet
+`--accent`, and over a metallic grey-blue because `#94A3B8` is already
+`--muted-foreground` in dark mode — a brand colour cannot also be the colour of
+de-emphasised text.
 
 ### Gain / loss are a separate pair
 
@@ -79,6 +85,8 @@ Colour is still never the only channel — see §6.
 
 - **The old phosphor green `--radar` / `oklch(… 152)` hues.** Retired. Not
   "toned down", gone.
+- **Amber as the brand.** Tried, rejected. It survives only as one entry in the
+  line-series palette, where it is a series identity and not the brand.
 - Neon-on-black glow. The HUD source style is `accessibility: risk:high` and
   `performance: drivers:animation,blur`; its palette is borrowed for *geometry
   only*.
@@ -149,8 +157,15 @@ Everything here is decorative and must degrade to nothing under
 
 These are behaviours, not decoration. The redesign does not get to drop them:
 
-1. **Direction never depends on hue alone.** Line series cycle
-   solid / dashed / dotted; rising candles are hollow, falling candles filled.
+1. **Candle direction never depends on hue alone.** Rising candles are hollow,
+   falling candles filled.
+
+   **Line series carry no dash pattern.** Decided and re-confirmed: they are
+   told apart by colour, stroke weight and the legend. On three years of daily
+   bars the dashes collapse into each other and the patterned series reads as
+   fainter — that is, as less important — than the solid one. Do not
+   reintroduce solid/dashed/dotted, and do not propose LargeDashed as a
+   compromise.
 2. **Canvas colour lives in one file.** `lightweight-charts` draws into a canvas
    and cannot read CSS custom properties, so every token used by the chart is
    mirrored in `lib/chartTheme.ts` — and the legend reads the *same functions*

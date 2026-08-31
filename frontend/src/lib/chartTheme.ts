@@ -23,7 +23,7 @@ export type ChartTheme = "light" | "dark";
  * BRAND is identity and GAIN is direction, and they are deliberately different
  * colours: an amber bar must never be readable as a rising one.
  */
-const BRAND = { dark: "#f59e0b", light: "#b45309" };
+const BRAND = { dark: "#60a5fa", light: "#1d4ed8" };
 const GAIN = { dark: "#2dd4bf", light: "#115e59" };
 const LOSS = { dark: "#f87171", light: "#b91c1c" };
 
@@ -35,8 +35,8 @@ const GRID_LINE = {
 /** The chip behind a crosshair figure: darker than the page in both themes. */
 const CROSSHAIR_LABEL = { dark: "#0b1220", light: "#1e293b" };
 const CROSSHAIR_LINE = {
-  dark: "rgba(245, 158, 11, 0.45)",
-  light: "rgba(180, 83, 9, 0.55)",
+  dark: "rgba(96, 165, 250, 0.45)",
+  light: "rgba(29, 78, 216, 0.55)",
 };
 
 const MONO_STACK =
@@ -100,7 +100,7 @@ export function candlestickOptions(theme: ChartTheme) {
 /**
  * One colour per line series, cycled if more symbols than colours are picked.
  * The brand leads: with a single symbol selected - the common case - the chart
- * is drawn in the same amber as the rest of the interface.
+ * is drawn in the same blue as the rest of the interface.
  *
  * The light row is not the dark row darkened by eye; every entry clears 4.5:1
  * against white, where the dark row sits far below it and would read as pastel
@@ -108,8 +108,12 @@ export function candlestickOptions(theme: ChartTheme) {
  * the other half.
  */
 const LINE_COLORS: Record<ChartTheme, string[]> = {
-  dark: [BRAND.dark, "#60a5fa", "#c084fc", "#34d399", "#f472b6", "#22d3ee"],
-  light: [BRAND.light, "#1d4ed8", "#7e22ce", "#047857", "#be185d", "#0e7490"],
+  // Ordered so adjacent entries are the most separable: two or three symbols
+  // is the common case, six is the exception. Nothing here sits in the teal or
+  // red band - those hues belong to --gain and --loss, and a series must never
+  // be readable as a direction.
+  dark: [BRAND.dark, "#f472b6", "#fbbf24", "#c084fc", "#94a3b8", "#fb923c"],
+  light: [BRAND.light, "#be185d", "#b45309", "#7e22ce", "#475569", "#c2410c"],
 };
 
 /**
@@ -123,21 +127,19 @@ export function lineColor(index: number, theme: ChartTheme) {
 }
 
 /**
- * Dash pattern of the nth line series, in both dialects at once: the enum the
- * canvas takes and the CSS keyword the legend swatch takes. They are one entry
- * rather than two lookups so the swatch cannot claim a pattern the line does
- * not draw.
+ * Stroke weight of the nth line series.
  *
- * Hue alone is not enough to tell six series apart - it fails outright for a
- * colourblind viewer, and it fails for everyone once a printout or a screenshot
- * loses the colour. The pattern is the second channel.
+ * Series are told apart by colour first, weight second, and the legend third.
+ * There is deliberately no dash pattern: on three years of daily bars the
+ * dashes collapse into each other and a patterned series reads as fainter -
+ * and therefore less important - than a solid one, which is a meaning nobody
+ * asked it to carry.
+ *
+ * Weight is the weaker of the two visual channels and is not pretending
+ * otherwise; with six distinct hues, colour does most of the work.
  */
-const LINE_STYLES = [
-  { canvas: LineStyle.Solid, css: "solid" },
-  { canvas: LineStyle.Dashed, css: "dashed" },
-  { canvas: LineStyle.Dotted, css: "dotted" },
-] as const;
+const LINE_WIDTHS = [2, 3] as const;
 
-export function lineStyle(index: number) {
-  return LINE_STYLES[index % LINE_STYLES.length];
+export function lineWidth(index: number) {
+  return LINE_WIDTHS[index % LINE_WIDTHS.length];
 }
