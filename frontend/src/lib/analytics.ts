@@ -70,9 +70,23 @@ export function lineSeriesData(
   }));
 }
 
-/** OHLC bars for one symbol, dropping any bar with a missing value. */
+/**
+ * How many candles are worth drawing at once. Past roughly this many the
+ * bodies collapse to hairlines and the chart stops being a candlestick chart -
+ * it reads as a smear, and the open/close it exists to show is unresolvable.
+ */
+export const MAX_CANDLES = 500;
+
+/**
+ * OHLC bars for one symbol, dropping any bar with a missing value.
+ *
+ * Returns the newest `MAX_CANDLES` rows alongside the count before trimming:
+ * the caller has to be able to say that it trimmed, because a chart that
+ * quietly shows two of three stored years is worse than one that shows less
+ * and admits it.
+ */
 export function candleSeriesData(bars: PriceBar[], symbol: string) {
-  return bars
+  const rows = bars
     .filter(
       (bar) =>
         bar.symbol === symbol &&
@@ -88,6 +102,8 @@ export function candleSeriesData(bars: PriceBar[], symbol: string) {
       low: bar.low as number,
       close: bar.close as number,
     }));
+
+  return { rows: rows.slice(-MAX_CANDLES), total: rows.length };
 }
 
 export type SymbolSummary = {

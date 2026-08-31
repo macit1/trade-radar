@@ -70,13 +70,24 @@ export function chartOptions(theme: ChartTheme): DeepPartial<ChartOptions> {
   };
 }
 
+/**
+ * Direction is carried by the body fill as well as the hue: an up bar is
+ * hollow, a down bar solid. Red and green are the one pair a red-green
+ * colourblind viewer cannot separate, and on this chart they are the whole
+ * message - so the shape has to say it too. This is the standard hollow-candle
+ * convention, not an invention.
+ */
 export function candlestickOptions(theme: ChartTheme) {
   return {
-    upColor: RADAR[theme],
+    upColor: "transparent",
     downColor: LOSS[theme],
+    // Borders are what draw a hollow body at all, so unlike the filled version
+    // they cannot be switched off.
+    borderVisible: true,
+    borderUpColor: RADAR[theme],
+    borderDownColor: LOSS[theme],
     wickUpColor: RADAR[theme],
     wickDownColor: LOSS[theme],
-    borderVisible: false,
   };
 }
 
@@ -102,4 +113,24 @@ const LINE_COLORS: Record<ChartTheme, string[]> = {
 export function lineColor(index: number, theme: ChartTheme) {
   const palette = LINE_COLORS[theme];
   return palette[index % palette.length];
+}
+
+/**
+ * Dash pattern of the nth line series, in both dialects at once: the enum the
+ * canvas takes and the CSS keyword the legend swatch takes. They are one entry
+ * rather than two lookups so the swatch cannot claim a pattern the line does
+ * not draw.
+ *
+ * Hue alone is not enough to tell six series apart - it fails outright for a
+ * colourblind viewer, and it fails for everyone once a printout or a screenshot
+ * loses the colour. The pattern is the second channel.
+ */
+const LINE_STYLES = [
+  { canvas: LineStyle.Solid, css: "solid" },
+  { canvas: LineStyle.Dashed, css: "dashed" },
+  { canvas: LineStyle.Dotted, css: "dotted" },
+] as const;
+
+export function lineStyle(index: number) {
+  return LINE_STYLES[index % LINE_STYLES.length];
 }
