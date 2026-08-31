@@ -85,7 +85,15 @@
      denser than on black to read as a sweep rather than a smudge. */
   --sweep-strength: 70%;
 
-  --background: oklch(1 0 0);
+  /*
+   * Background and card were both pure white, so a card only existed by its
+   * border. Dropping the page to slate-50 and leaving cards at white makes the
+   * surface do the separating, which is what a dense dashboard needs once
+   * panels sit next to each other. The tint is neutral-cool, not blue: the
+   * generated palette's #DBEAFE border is blue-100 and would have pulled the
+   * page away from the green accent.
+   */
+  --background: oklch(0.984 0.003 247.858);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.145 0 0);
@@ -93,15 +101,17 @@
   --popover-foreground: oklch(0.145 0 0);
   --primary: oklch(0.205 0 0);
   --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
+  --secondary: oklch(0.968 0.007 247.896);
   --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
+  --muted: oklch(0.968 0.007 247.896);
+  /* Was oklch(0.556 0 0) - a mid grey that reads 3.9:1 on white and fails AA
+     for the dates, volumes and helper text it colours. Slate-600 is 7.4:1. */
+  --muted-foreground: oklch(0.446 0.043 257.281);
+  --accent: oklch(0.968 0.007 247.896);
   --accent-foreground: oklch(0.205 0 0);
   --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
+  --border: oklch(0.929 0.013 255.508);
+  --input: oklch(0.929 0.013 255.508);
   --ring: oklch(0.708 0 0);
   --chart-1: oklch(0.87 0 0);
   --chart-2: oklch(0.556 0 0);
@@ -185,9 +195,20 @@
   animation: radar-sweep 4s linear infinite;
 }
 
+/*
+ * The sweep was the only animation when this guard was written, but hover and
+ * state transitions have accumulated since. Covering everything is the honest
+ * reading of the preference: a viewer who asks for less motion gets the final
+ * state immediately rather than the shortest of several bespoke exceptions.
+ */
 @media (prefers-reduced-motion: reduce) {
-  .radar-sweep {
-    animation: none;
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }
 
