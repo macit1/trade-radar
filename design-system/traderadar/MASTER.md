@@ -1,293 +1,197 @@
-# Design System Master File
+# TradeRadar — Design System (Master)
 
-> **LOGIC:** When building a specific page, first check `design-system/pages/[page-name].md`.
-> If that file exists, its rules **override** this Master file.
-> If not, strictly follow the rules below.
+> **LOGIC:** When building a specific page, first check
+> `design-system/traderadar/pages/[page-name].md`. If that file exists, its
+> rules **override** this Master file. If not, follow the rules below.
 
----
+**Project:** TradeRadar — a daily OHLCV market monitor. Six symbols, three years
+of daily bars, one view. No orders, no brokerage, no advice: it watches, it does
+not act.
+**Generated:** 2026-08-31 · replaces the first draft entirely
+**Category:** Analytics Dashboard (dark-first)
+**Design Dials:** Variance 7/10 · Motion 4/10 · Density 8/10
 
-**Project:** TradeRadar
-**Generated:** 2026-08-31 23:12:00
-**Category:** Analytics Dashboard
-**Design Dials:** Variance 6/10 (Balanced / Modern) | Motion 4/10 (Standard) | Density 8/10 (Dense / Dashboard)
+## Where this came from
 
----
+Composed from three `ui-ux-pro-max` queries, because no single one answered it:
 
-## Global Rules
+| Query | Took |
+|---|---|
+| `"fintech crypto trading terminal dark HUD" --design-system` | palette, structural style, dials |
+| `"HUD sci-fi FUI wireframe technical" --domain style` | the radar character layer |
+| `"technical monospace precise data terminal" --domain typography` | the type pairing |
 
-### Color Palette
-
-| Role | Hex | CSS Variable |
-|------|-----|--------------|
-| Primary | `#1E40AF` | `--color-primary` |
-| On Primary | `#FFFFFF` | `--color-on-primary` |
-| Secondary | `#3B82F6` | `--color-secondary` |
-| On Secondary | `#000000` | `--color-on-secondary` |
-| Accent/CTA | `#D97706` | `--color-accent` |
-| On Accent/CTA | `#000000` | `--color-on-accent` |
-| Background | `#F8FAFC` | `--color-background` |
-| Foreground | `#1E3A8A` | `--color-foreground` |
-| Card | `#FFFFFF` | `--color-card` |
-| Card Foreground | `#1E3A8A` | `--color-card-foreground` |
-| Muted | `#E9EEF6` | `--color-muted` |
-| Muted Foreground | `#475569` | `--color-muted-foreground` |
-| Border | `#DBEAFE` | `--color-border` |
-| Destructive | `#DC2626` | `--color-destructive` |
-| On Destructive | `#FFFFFF` | `--color-on-destructive` |
-| Ring | `#1E40AF` | `--color-ring` |
-
-**Color Notes:** Blue data + amber highlights [Accent adjusted from #F59E0B]
-
-### Typography
-
-- **Heading Font:** Fira Code
-- **Body Font:** Fira Sans
-- **Mood:** dashboard, data, analytics, code, technical, precise
-- **Google Fonts:** [Fira Code + Fira Sans](https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Fira+Sans:wght@300;400;500;600;700&display=swap)
-
-**CSS Import:**
-```css
-@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Fira+Sans:wght@300;400;500;600;700&display=swap');
-```
-
-### Spacing Variables
-
-*Density: 8/10 — Dense / Dashboard*
-
-| Token | Value | Usage |
-|-------|-------|-------|
-| `--space-xs` | `2px` / `0.125rem` | Tight gaps |
-| `--space-sm` | `4px` / `0.25rem` | Icon gaps, inline spacing |
-| `--space-md` | `8px` / `0.5rem` | Standard padding |
-| `--space-lg` | `12px` / `0.75rem` | Section padding |
-| `--space-xl` | `16px` / `1rem` | Large gaps |
-| `--space-2xl` | `24px` / `1.5rem` | Section margins |
-| `--space-3xl` | `32px` / `2rem` | Hero padding |
-
-### Shadow Depths
-
-| Level | Value | Usage |
-|-------|-------|-------|
-| `--shadow-sm` | `0 1px 2px rgba(0,0,0,0.05)` | Subtle lift |
-| `--shadow-md` | `0 4px 6px rgba(0,0,0,0.1)` | Cards, buttons |
-| `--shadow-lg` | `0 10px 15px rgba(0,0,0,0.1)` | Modals, dropdowns |
-| `--shadow-xl` | `0 20px 25px rgba(0,0,0,0.15)` | Hero images, featured cards |
+**Rejected on the way:** a `"radar monitoring scanning surveillance"` query
+returned **Organic Biophilic** — wellness, eco, rounded, green. The word "radar"
+without a product type reads as nature. Discarded outright.
 
 ---
 
-## Component Specs
+## 1. The idea
 
-### Buttons
+**The radar is structural, not chromatic.** The previous identity said "radar"
+by being phosphor green. That is retired. This one says it by behaving like an
+instrument: hairline rules, bracket markers at the corners of live regions,
+monospace readouts, a sweep that runs only where something is actually being
+watched.
 
-```css
-/* Primary Button */
-.btn-primary {
-  background: #D97706;
-  color: white;
-  padding: 12px 24px;
-  border-radius: 8px;
-  font-weight: 600;
-  transition: all 200ms ease;
-  cursor: pointer;
-}
-
-.btn-primary:hover {
-  opacity: 0.9;
-  transform: translateY(-1px);
-}
-
-/* Secondary Button */
-.btn-secondary {
-  background: transparent;
-  color: #1E40AF;
-  border: 2px solid #1E40AF;
-  padding: 12px 24px;
-  border-radius: 8px;
-  font-weight: 600;
-  transition: all 200ms ease;
-  cursor: pointer;
-}
-```
-
-### Cards
-
-```css
-.card {
-  background: #F8FAFC;
-  border-radius: 12px;
-  padding: 24px;
-  box-shadow: var(--shadow-md);
-  transition: all 200ms ease;
-  cursor: pointer;
-}
-
-.card:hover {
-  box-shadow: var(--shadow-lg);
-  transform: translateY(-2px);
-}
-```
-
-### Inputs
-
-```css
-.input {
-  padding: 12px 16px;
-  border: 1px solid #E2E8F0;
-  border-radius: 8px;
-  font-size: 16px;
-  transition: border-color 200ms ease;
-}
-
-.input:focus {
-  border-color: #1E40AF;
-  outline: none;
-  box-shadow: 0 0 0 3px #1E40AF20;
-}
-```
-
-### Modals
-
-```css
-.modal-overlay {
-  background: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(4px);
-}
-
-.modal {
-  background: white;
-  border-radius: 16px;
-  padding: 32px;
-  box-shadow: var(--shadow-xl);
-  max-width: 500px;
-  width: 90%;
-}
-```
+A radar screen is mostly empty and very precise. That is the target: dense with
+data, sparse with decoration.
 
 ---
 
-## Style Guidelines
+## 2. Colour
 
-**Style:** Data-Dense Dashboard
+Dark is the primary mode. Light is a supported second mode, measured
+separately — never the dark values inverted.
 
-**Keywords:** Multiple charts/widgets, data tables, KPI cards, minimal padding, grid layout, space-efficient, maximum data visibility
+### Dark (primary)
 
-**Best For:** Business intelligence dashboards, financial analytics, enterprise reporting, operational dashboards, data warehousing
+| Role | Hex | Notes |
+|------|-----|-------|
+| Background | `#0F172A` | deep navy, not black — black kills the hairlines |
+| Card | `#222735` | |
+| Muted surface | `#272F42` | |
+| Border | `#334155` | |
+| Foreground | `#F8FAFC` | |
+| Muted foreground | `#94A3B8` | |
+| **Brand / primary** | `#F59E0B` | amber. The instrument-panel colour |
+| Secondary | `#FBBF24` | |
+| Accent | `#8B5CF6` | violet, sparingly — one CTA per view at most |
+| Destructive | `#EF4444` | |
 
-**Key Effects:** Hover tooltips, chart zoom on click, row highlighting on hover, smooth filter animations, data loading spinners
+*Palette note from the source data: "Gold trust + purple tech".*
 
-### Page Pattern
+### Gain / loss are a separate pair
 
-**Pattern Name:** Enterprise Gateway
+Brand amber must never mean "up". Direction gets its own semantic tokens, and
+teal beats green here: **teal vs red separates for a red-green colourblind
+viewer where green vs red does not.**
 
-- **Conversion Strategy:** Path selection (I am a...). Mega menu navigation. Trust signals prominent. Provide pause/stop for video and rotating logos; stop on focus and reduced motion. Logo carousel controls must be keyboard operable; pause moving media offscreen/hidden and render a static final state under reduced motion.
-- **CTA Placement:** Contact Sales (Primary) + Login (Secondary)
-- **Section Order:** Hero (Video/Mission) > Solutions by Industry > Solutions by Role > Client Logos > Contact Sales
+| Token | Dark | Light |
+|---|---|---|
+| `--gain` | `#2DD4BF` | measure a ≥4.5:1 variant before use |
+| `--loss` | `#EF4444` | measure a ≥4.5:1 variant before use |
 
----
+Colour is still never the only channel — see §6.
 
-## Motion
+### Forbidden
 
-**Stagger List** (Standard) — Trigger: load or scroll | Duration: 300-450ms | Easing: `back.out(1.4)`
-
-```js
-gsap.from('.grid-item', { opacity: 0, scale: 0.92, y: 16, duration: 0.4, stagger: { each: 0.06, from: 'start', grid: 'auto' }, ease: 'back.out(1.4)' });
-```
-
-**Framework notes:** grid: 'auto' lets GSAP infer rows/columns from a CSS grid layout for a natural wave stagger; Use matchMedia('(prefers-reduced-motion: reduce)') to skip non-essential motion and render the final state immediately
-
-- ✅ Combine with from: 'center' for a bento-grid layout to draw the eye inward first
-- ❌ Don't use back.out on dense data tables; the overshoot reads as sloppy on informational UI
-- ⚡ Group DOM writes; avoid interleaving layout reads (getBoundingClientRect) between staggered tweens
-
----
-
-## Anti-Patterns (Do NOT Use)
-
-- ❌ Ornate design
-- ❌ No filtering
-
-### Additional Forbidden Patterns
-
-- ❌ **Emojis as icons** — Use SVG icons (Heroicons, Lucide, Simple Icons)
-- ❌ **Missing cursor:pointer** — All clickable elements must have cursor:pointer
-- ❌ **Layout-shifting hovers** — Avoid scale transforms that shift layout
-- ❌ **Low contrast text** — Maintain 4.5:1 minimum contrast ratio
-- ❌ **Instant state changes** — Always use transitions (150-300ms)
-- ❌ **Invisible focus states** — Focus states must be visible for a11y
+- **The old phosphor green `--radar` / `oklch(… 152)` hues.** Retired. Not
+  "toned down", gone.
+- Neon-on-black glow. The HUD source style is `accessibility: risk:high` and
+  `performance: drivers:animation,blur`; its palette is borrowed for *geometry
+  only*.
+- AI purple/pink gradients (named anti-pattern in the source data).
 
 ---
 
-## Pre-Delivery Checklist
+## 3. Typography
 
-Before delivering any UI code, verify:
+| Role | Face | Why |
+|---|---|---|
+| Display / headings | **Exo** | squared, technical, slightly futurist — the instrument character without a novelty font |
+| Body & UI | **Roboto Mono** | |
+| Figures | **Roboto Mono**, `tabular-nums` | |
 
-- [ ] No emojis used as icons (use SVG instead)
-- [ ] All icons from consistent icon set (Heroicons/Lucide)
-- [ ] `cursor-pointer` on all clickable elements
-- [ ] Hover states with smooth transitions (150-300ms)
-- [ ] Light mode: text contrast 4.5:1 minimum
-- [ ] Focus states visible for keyboard navigation
-- [ ] `prefers-reduced-motion` respected
-- [ ] Responsive: 375px, 768px, 1024px, 1440px
-- [ ] No content hidden behind fixed navbars
-- [ ] No horizontal scroll on mobile
+Source mood: *science, technology, research, data, futuristic, precise*.
+
+**The old trio — Inter / JetBrains Mono / Chakra Petch — is retired.**
+
+**Load them with `next/font`, not `@import url(fonts.googleapis.com)`.** The
+skill's generated CSS import is a regression here: it is render-blocking, causes
+FOIT and layout shift, and contradicts the skill's own `font-loading` and
+`third-party-scripts` rules. Self-host. This is not negotiable regardless of
+which faces are chosen.
+
+`tabular-nums` on every price, change and volume. Proportional digits make the
+table jitter as values update.
 
 ---
 
-## Project Adaptation — TradeRadar
+## 4. Structure
 
-The generated system above is the raw skill output. TradeRadar already ships a
-live UI, so three parts of it are overridden here. **These overrides win over
-the Global Rules above.**
+Base style: **Minimalism & Swiss Style** — grid-based, high contrast,
+functional, generous with white space *between* groups and tight *within* them.
 
-### 1. Colour — keep radar-green, drop the blue/amber palette
+Density 8/10 spacing scale: **2 / 4 / 8 / 12 / 16 / 24 / 32px**.
 
-The generated `#1E40AF` / `#D97706` pair would erase the existing brand: the
-`RadarMark` logo, the `--radar` accent and the chart series colours are all
-green today. Keep green as the brand/accent and take only the *neutral* half of
-the generated palette (background, card, muted, border) as the surface scale.
+- Grid, not one centred column. At ≥1024px the KPI row and the summary table
+  should be able to sit beside the chart rather than stacking below it.
+- No sidebar. There is one view; a sidebar would spend 300px permanently.
+- One primary action per view.
 
-| Role | Value | Where it lives |
-|------|-------|----------------|
-| Brand / accent | `--radar` (existing) | `globals.css` `:root` **and** `.dark`, mirrored in `lib/chartTheme.ts` |
-| Surfaces | generated neutrals | `globals.css` |
-| Destructive | `#DC2626` | unchanged |
+**Discard the returned page pattern.** The `--design-system` run returned
+"Trust & Authority + Conversion" (hero, proof logos, contact sales). That is a
+marketing landing page. TradeRadar is a single-view dashboard.
 
-`--radar` is defined in three places and canvas cannot read CSS custom
-properties — change all three together or the chart drifts from the DOM.
+---
 
-### 2. Typography — Fira Sans body, tabular figures required
+## 5. The radar character layer
 
-Adopt Fira Sans for body and Fira Code for numerics. The important part is not
-the family but `font-variant-numeric: tabular-nums` on every price, change and
-volume cell: proportional digits make the summary table and KPI cards jitter as
-values update (`number-tabular`).
+Borrowed from HUD / Sci-Fi FUI — **geometry and motion only, no neon, no glow**:
 
-### 3. Layout — density 8, but no landing-page pattern
+- **1px hairlines.** Rules and dividers at 1px, low contrast, doing the work
+  that shadows would do elsewhere.
+- **Bracket markers.** Corner brackets on the live chart region, not on every
+  card — they mark what is being watched.
+- **Monospace readouts** with unit labels, aligned in columns.
+- **A sweep.** One, and only where something is actually live. The old logo
+  sweep is the right instinct; keep exactly one instance of it.
+- **Ticker/scan motion is opt-in**, never ambient.
 
-The skill returned the "Enterprise Gateway" *landing page* pattern (hero,
-solutions, contact sales). Discarded — TradeRadar is a single-view dashboard,
-not a marketing site. What applies is the **Data-Dense Dashboard** style:
+Everything here is decorative and must degrade to nothing under
+`prefers-reduced-motion` without loss of meaning.
 
-- Spacing scale from the density-8 table above (2 / 4 / 8 … 32px), replacing the
-  current `gap-6` rhythm.
-- Grid instead of one `max-w-6xl` column, so KPI cards and the summary table can
-  sit beside the chart at ≥1024px rather than stacking below it.
-- Row highlight on hover, tooltips on the chart, no decorative shadow.
+---
 
-### 4. Chart rules (from `--domain chart`)
+## 6. Rules that survive the redesign
 
-- **Line (multi-symbol):** max 6 series. Series must differ by **line style**
-  (solid / dashed / dotted) as well as hue — hue alone fails colourblind users.
-- **Candlestick:** bullish `#26A69A`, bearish `#EF5350`, volume at 40% opacity.
-  Filled vs hollow bodies must carry the direction too, not just colour.
-  Max 500 candles visible; paginate by range beyond that.
-- **Both:** the existing `SummaryTable` is the accessible fallback — keep it
-  visible, make it sortable with `aria-sort`.
+These are behaviours, not decoration. The redesign does not get to drop them:
 
-### 5. Motion — reject the generated preset
+1. **Direction never depends on hue alone.** Line series cycle
+   solid / dashed / dotted; rising candles are hollow, falling candles filled.
+2. **Canvas colour lives in one file.** `lightweight-charts` draws into a canvas
+   and cannot read CSS custom properties, so every token used by the chart is
+   mirrored in `lib/chartTheme.ts` — and the legend reads the *same functions*
+   the chart does, so the two cannot drift.
+3. **Light and dark are measured separately.** Every foreground/background pair
+   ≥4.5:1 in both modes, checked, not eyeballed.
+4. **Max 500 candles, and say so** when trimming. Max 6 line series.
+5. **Client-side filtering.** Period, normalise and chart type recompute from
+   one cached fetch. No network on toggle.
+6. **The chart is created once.** Theme changes go through `applyOptions` so a
+   toggle never discards the viewer's zoom and pan.
+7. **`prefers-reduced-motion` covers everything**, not one named animation.
 
-`back.out(1.4)` stagger is explicitly wrong here; the skill's own note says the
-overshoot "reads as sloppy on informational UI". Use a plain fade/translate at
-150–300ms for filter changes, and guard everything with
-`prefers-reduced-motion`.
+## 7. Motion
+
+Reject the generated `back.out(1.4)` stagger preset. The skill's own note says
+the overshoot "reads as sloppy on informational UI" — and this is entirely
+informational UI.
+
+Fade/translate, 150–300ms, one shared easing token. Exit ~60–70% of enter.
+
+## 8. Anti-patterns
+
+- Generic design · ignored accessibility · AI purple/pink gradients *(named in
+  the source data)*
+- Emoji as icons — SVG only, one family, consistent stroke width
+- Decorative shadows on data surfaces
+- Any colour-only signal
+
+## 9. Checklist
+
+- [ ] No trace of the retired green
+- [ ] Fonts self-hosted via `next/font`
+- [ ] `tabular-nums` on every figure
+- [ ] Text ≥4.5:1 in **both** modes, measured
+- [ ] Focus rings visible on every control
+- [ ] `prefers-reduced-motion` honoured globally
+- [ ] Responsive at 375 / 768 / 1024 / 1440
+- [ ] Chart readable in greyscale
+
+---
+
+*What the interface looks like today, before any of this lands, is recorded in
+[`CURRENT-UI.md`](./CURRENT-UI.md). That file is a record, not a constraint.*
