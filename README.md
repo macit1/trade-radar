@@ -161,6 +161,22 @@ CREATE TABLE prices (
 
 Re-running is safe: rows are upserted on `(symbol, date)`, never duplicated.
 
+## Company logos
+
+The symbol badges show company logos served by
+[Brandfetch](https://brandfetch.com)'s Logo API, requested by ticker at display
+time - no marks are copied into this repository. Where a logo is unavailable
+the badge falls back to a two-letter abbreviation, so the interface never
+depends on the request succeeding.
+
+Company logos are shown for identification purposes only. There is no
+affiliation with, sponsorship by, or endorsement from any of the companies
+whose marks appear. All trademarks belong to their respective owners.
+
+The API needs a free client ID in `frontend/.env.local` as
+`NEXT_PUBLIC_BRANDFETCH_CLIENT_ID`; see `frontend/.env.example`. Leave it unset
+and the badges simply stay lettered.
+
 ## License
 
 MIT - see [LICENSE](LICENSE).
