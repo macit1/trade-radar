@@ -2,7 +2,7 @@
 
 import { Sparkline } from "@/components/Sparkline";
 import { SymbolBadge } from "@/components/SymbolBadge";
-import type { SymbolSummary } from "@/lib/analytics";
+import type { SparkPoint, SymbolSummary } from "@/lib/analytics";
 import {
   formatChange,
   formatPercent,
@@ -22,20 +22,33 @@ type Props = {
   summaries: SymbolSummary[];
   slots: Record<string, number>;
   /** Closing prices per symbol for the trend column, oldest first. */
-  trends: Record<string, number[]>;
+  trends: Record<string, SparkPoint[]>;
 };
 
 export function SummaryTable({ summaries, slots, trends }: Props) {
   if (summaries.length === 0) return null;
 
+  // The date used to be a column, where it was one value repeated once per row:
+  // the validation layer treats a symbol trading on a different calendar from
+  // the others as an error, so in practice every row is the same session. One
+  // value belongs in the heading. If they ever do disagree, the heading says so
+  // rather than picking one of them silently.
+  const dates = [...new Set(summaries.map((summary) => summary.date))].sort();
+  const asOf = dates.length === 1 ? dates[0] : `up to ${dates.at(-1)}`;
+
   return (
     <section className="panel rounded-xl border bg-card p-4">
-      <h2 className="mb-3 text-sm font-medium">Latest bar</h2>
+      <h2 className="mb-3 flex items-baseline gap-1.5 text-sm font-medium">
+        Latest bar
+        <span className="font-mono text-xs font-normal text-muted-foreground">
+          · {asOf}
+        </span>
+      </h2>
 
       {/* Seven columns do not fit a phone; the table scrolls rather than
           wrapping figures onto two lines. */}
       <div className="overflow-x-auto">
-        <table className="w-full min-w-[720px] border-collapse font-mono text-sm tabular-nums">
+        <table className="w-full min-w-[660px] border-collapse font-mono text-sm tabular-nums">
           <thead>
             <tr className="border-b text-xs tracking-wide text-muted-foreground uppercase">
               <Th align="left">Symbol</Th>
@@ -45,7 +58,6 @@ export function SummaryTable({ summaries, slots, trends }: Props) {
               <Th align="left" className="hidden md:table-cell">
                 Trend
               </Th>
-              <Th align="left">Date</Th>
               <Th>Close</Th>
               <Th>Change</Th>
               <Th>Change %</Th>
@@ -99,7 +111,7 @@ function Row({
 }: {
   summary: SymbolSummary;
   slot: number | undefined;
-  trend: number[];
+  trend: SparkPoint[];
 }) {
   const { change } = summary;
   const up = change !== null && change >= 0;
@@ -120,7 +132,6 @@ function Row({
       <td className="hidden px-3 py-2 md:table-cell">
         <Sparkline values={trend} />
       </td>
-      <td className="px-3 py-2 text-muted-foreground">{summary.date}</td>
       <td className="px-3 py-2 text-right">{formatPrice(summary.close)}</td>
       <td className={cn("px-3 py-2 text-right", changeTone)}>
         {formatChange(change)}

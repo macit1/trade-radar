@@ -109,6 +109,9 @@ export function candleSeriesData(bars: PriceBar[], symbol: string) {
 /** How many sessions the table's trend column draws, at most. */
 export const SPARKLINE_POINTS = 30;
 
+/** One drawn point: the trend line needs the date so it can be pointed at. */
+export type SparkPoint = { date: string; close: number };
+
 /**
  * Closing prices for the tail of the current window, for one symbol.
  *
@@ -122,10 +125,10 @@ export function sparklineSeries(
   bars: PriceBar[],
   symbol: string,
   points = SPARKLINE_POINTS,
-): number[] {
+): SparkPoint[] {
   return bars
     .filter((bar) => bar.symbol === symbol && bar.close !== null)
-    .map((bar) => bar.close as number)
+    .map((bar) => ({ date: bar.date, close: bar.close as number }))
     .slice(-points);
 }
 
