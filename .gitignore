@@ -17,3 +17,9 @@ PLAN.md
 
 # Scaffolding tools keep regenerating these; they are not project docs.
 AGENTS.md
+
+# graphify build artefacts - regenerable from the corpus
+graphify-out/
+
+# Local Claude Code settings - machine-specific paths, not project config.
+.claude/
