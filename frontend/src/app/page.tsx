@@ -13,9 +13,11 @@ import { RadarMark } from "@/components/RadarMark";
 import { SummaryTable } from "@/components/SummaryTable";
 import { SymbolMultiSelect } from "@/components/SymbolMultiSelect";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { TickerSearch } from "@/components/TickerSearch";
 import { usePrices } from "@/hooks/usePrices";
 import { useSymbols } from "@/hooks/useSymbols";
 import { applyPeriod, summarise, type Period } from "@/lib/analytics";
+import { buildBadgeSlots } from "@/lib/symbolBadge";
 import type { ChartType } from "@/lib/types";
 
 export default function DashboardPage() {
@@ -33,6 +35,11 @@ export default function DashboardPage() {
   // Memoised so the fallback [] is not a fresh array on every render, which
   // would re-run the preselect effect below for no reason.
   const symbols = useMemo(() => symbolsQuery.data ?? [], [symbolsQuery.data]);
+
+  // Badge colours are keyed to the whole tracked universe, not the selection,
+  // so they are computed here once and handed down rather than re-derived by
+  // every component that draws a badge.
+  const badgeSlots = useMemo(() => buildBadgeSlots(symbols), [symbols]);
 
   // Preselect the first symbol so the page shows a chart on arrival, but only
   // once - after that the selection belongs to the viewer.
@@ -89,6 +96,7 @@ export default function DashboardPage() {
         <SymbolMultiSelect
           options={symbols}
           selected={selected}
+          slots={badgeSlots}
           onChange={setSelected}
         />
 
@@ -103,7 +111,7 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      <KpiCards summaries={summaries} />
+      <KpiCards summaries={summaries} slots={badgeSlots} />
 
       <section className="panel rounded-xl border bg-card p-4">
         <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
@@ -126,6 +134,16 @@ export default function DashboardPage() {
               single symbol selected the picker would have nothing to choose
               between - the heading already names it. */}
           <div className="flex flex-wrap items-center gap-3">
+            {/* A jump, not an add: picking here drops the selection to the one
+                symbol. It sits with the chart because that is what it acts on -
+                the multiselect beside the header edits the tracked set, this
+                re-points the chart in one keystroke. */}
+            <TickerSearch
+              options={symbols}
+              slots={badgeSlots}
+              onPick={(symbol) => setSelected([symbol])}
+            />
+
             {chartType === "candlestick" && selected.length > 1 && (
               <CandleSymbolToggle
                 options={selected}
@@ -165,7 +183,7 @@ export default function DashboardPage() {
 
       {/* Below the chart: the chart is what the page is for, and the table
           repeats its window rather than adding a filter of its own. */}
-      <SummaryTable summaries={summaries} />
+      <SummaryTable summaries={summaries} slots={badgeSlots} />
     </main>
   );
 }

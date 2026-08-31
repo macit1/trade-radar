@@ -2,6 +2,7 @@
 
 import { TrendingDown, TrendingUp } from "lucide-react";
 
+import { SymbolBadge } from "@/components/SymbolBadge";
 import { Card } from "@/components/ui/card";
 import type { SymbolSummary } from "@/lib/analytics";
 import {
@@ -12,27 +13,43 @@ import {
 } from "@/lib/format";
 import { cn } from "@/lib/utils";
 
-export function KpiCards({ summaries }: { summaries: SymbolSummary[] }) {
+type Props = {
+  summaries: SymbolSummary[];
+  slots: Record<string, number>;
+};
+
+export function KpiCards({ summaries, slots }: Props) {
   if (summaries.length === 0) return null;
 
   return (
     <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
       {summaries.map((summary) => (
-        <KpiCard key={summary.symbol} summary={summary} />
+        <KpiCard
+          key={summary.symbol}
+          summary={summary}
+          slot={slots[summary.symbol]}
+        />
       ))}
     </div>
   );
 }
 
-function KpiCard({ summary }: { summary: SymbolSummary }) {
+function KpiCard({
+  summary,
+  slot,
+}: {
+  summary: SymbolSummary;
+  slot: number | undefined;
+}) {
   const { change, changePct } = summary;
   const up = change !== null && change >= 0;
   const Icon = up ? TrendingUp : TrendingDown;
 
   return (
     <Card className="panel gap-0 p-4">
-      <div className="flex items-baseline justify-between">
-        <span className="font-mono text-sm font-medium tracking-wide">
+      <div className="flex items-center justify-between">
+        <span className="flex items-center gap-2 font-mono text-sm font-medium tracking-wide">
+          <SymbolBadge symbol={summary.symbol} slot={slot} />
           {summary.symbol}
         </span>
         <span className="font-mono text-xs text-muted-foreground">

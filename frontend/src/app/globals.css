@@ -86,6 +86,19 @@
   --loss: #b91c1c; /* 5.0:1 */
 
   /*
+   * Symbol badge colours. Six, matching BADGE_SLOTS in lib/symbolBadge.ts.
+   * None of them lands in the teal or red band - those belong to --gain and
+   * --loss, and a company badge must never be readable as a price direction.
+   * Every entry clears 4.5:1 against the card it sits on.
+   */
+  --badge-1: #b45309;
+  --badge-2: #be185d;
+  --badge-3: #4d7c0f;
+  --badge-4: #7e22ce;
+  --badge-5: #0369a1;
+  --badge-6: #c2410c;
+
+  /*
    * Panel definition is one effect with two settings. On a dark ground a faint
    * tint plus a lit top edge reads as depth; on a light one the same numbers
    * vanish, so light leans on the border and keeps the fill nearly clean.
@@ -129,6 +142,13 @@
    * figures it colours. One step lighter clears it at 5.4:1.
    */
   --loss: #f87171;
+
+  --badge-1: #fbbf24;
+  --badge-2: #f472b6;
+  --badge-3: #a3e635;
+  --badge-4: #c084fc;
+  --badge-5: #38bdf8;
+  --badge-6: #fb923c;
 
   --panel-border: 26%;
   --panel-tint: 4%;

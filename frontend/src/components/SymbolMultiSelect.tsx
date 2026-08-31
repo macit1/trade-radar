@@ -2,6 +2,7 @@
 
 import { ChevronDown, X } from "lucide-react";
 
+import { SymbolBadge } from "@/components/SymbolBadge";
 import { Button } from "@/components/ui/button";
 import {
   Command,
@@ -21,6 +22,7 @@ import { cn } from "@/lib/utils";
 type Props = {
   options: string[];
   selected: string[];
+  slots: Record<string, number>;
   onChange: (next: string[]) => void;
 };
 
@@ -30,7 +32,12 @@ type Props = {
  * the brand colour, which is how a symbol reads as "tracked" everywhere else
  * on the page.
  */
-export function SymbolMultiSelect({ options, selected, onChange }: Props) {
+export function SymbolMultiSelect({
+  options,
+  selected,
+  slots,
+  onChange,
+}: Props) {
   const toggle = (symbol: string) =>
     onChange(
       selected.includes(symbol)
@@ -94,8 +101,13 @@ export function SymbolMultiSelect({ options, selected, onChange }: Props) {
       {selected.map((symbol) => (
         <span
           key={symbol}
-          className="inline-flex h-7 items-center gap-1.5 rounded-md border border-brand/25 bg-brand/10 pr-1 pl-2 font-mono text-xs tracking-wide text-brand"
+          className="inline-flex h-7 items-center gap-1.5 rounded-md border border-brand/25 bg-brand/10 pr-1 pl-1.5 font-mono text-xs tracking-wide text-brand"
         >
+          <SymbolBadge
+            symbol={symbol}
+            slot={slots[symbol]}
+            className="size-5 text-[9px]"
+          />
           {symbol}
           <button
             type="button"

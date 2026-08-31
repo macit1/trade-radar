@@ -1,5 +1,6 @@
 "use client";
 
+import { SymbolBadge } from "@/components/SymbolBadge";
 import type { SymbolSummary } from "@/lib/analytics";
 import {
   formatChange,
@@ -16,7 +17,12 @@ import { cn } from "@/lib/utils";
  * glanceable view of one symbol, this is the comparable view across all of
  * them, where the figures line up in a column instead of across cards.
  */
-export function SummaryTable({ summaries }: { summaries: SymbolSummary[] }) {
+type Props = {
+  summaries: SymbolSummary[];
+  slots: Record<string, number>;
+};
+
+export function SummaryTable({ summaries, slots }: Props) {
   if (summaries.length === 0) return null;
 
   return (
@@ -40,7 +46,11 @@ export function SummaryTable({ summaries }: { summaries: SymbolSummary[] }) {
           </thead>
           <tbody>
             {summaries.map((summary) => (
-              <Row key={summary.symbol} summary={summary} />
+              <Row
+                key={summary.symbol}
+                summary={summary}
+                slot={slots[summary.symbol]}
+              />
             ))}
           </tbody>
         </table>
@@ -69,7 +79,13 @@ function Th({
   );
 }
 
-function Row({ summary }: { summary: SymbolSummary }) {
+function Row({
+  summary,
+  slot,
+}: {
+  summary: SymbolSummary;
+  slot: number | undefined;
+}) {
   const { change } = summary;
   const up = change !== null && change >= 0;
 
@@ -80,7 +96,12 @@ function Row({ summary }: { summary: SymbolSummary }) {
 
   return (
     <tr className="border-b last:border-0">
-      <td className="px-3 py-2 font-medium">{summary.symbol}</td>
+      <td className="px-3 py-2 font-medium">
+        <span className="flex items-center gap-2">
+          <SymbolBadge symbol={summary.symbol} slot={slot} />
+          {summary.symbol}
+        </span>
+      </td>
       <td className="px-3 py-2 text-muted-foreground">{summary.date}</td>
       <td className="px-3 py-2 text-right">{formatPrice(summary.close)}</td>
       <td className={cn("px-3 py-2 text-right", changeTone)}>
