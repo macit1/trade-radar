@@ -48,7 +48,7 @@ function KpiCard({ summary }: { summary: SymbolSummary }) {
         className={cn(
           "mt-1 flex items-center gap-1.5 font-mono text-sm tabular-nums",
           // A missing change means a single-bar window, not a flat day.
-          change === null ? "text-muted-foreground" : up ? "text-radar" : "text-loss",
+          change === null ? "text-muted-foreground" : up ? "text-gain" : "text-loss",
         )}
       >
         {change !== null && <Icon className="size-3.5" />}

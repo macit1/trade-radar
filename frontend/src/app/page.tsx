@@ -73,7 +73,7 @@ export default function DashboardPage() {
       <header className="flex items-center gap-3">
         <RadarMark />
         <div className="flex flex-col">
-          <h1 className="font-display text-xl font-semibold tracking-[0.14em] text-radar uppercase">
+          <h1 className="font-display text-xl font-semibold tracking-[0.14em] text-brand uppercase">
             TradeRadar
           </h1>
           <p className="text-sm text-muted-foreground">

@@ -6,5 +6,5 @@
  * the latter belongs to Switch and silently matches nothing here.
  */
 export const TOGGLE_ITEM =
-  "font-mono text-xs tracking-wide data-pressed:border-radar/45 " +
-  "data-pressed:bg-radar/15 data-pressed:text-radar";
+  "font-mono text-xs tracking-wide data-pressed:border-brand/45 " +
+  "data-pressed:bg-brand/15 data-pressed:text-brand";

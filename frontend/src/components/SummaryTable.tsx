@@ -76,7 +76,7 @@ function Row({ summary }: { summary: SymbolSummary }) {
   // Same rule as the KPI cards: a missing change means a single-bar window,
   // not a flat day, so it stays neutral rather than reading as green.
   const changeTone =
-    change === null ? "text-muted-foreground" : up ? "text-radar" : "text-loss";
+    change === null ? "text-muted-foreground" : up ? "text-gain" : "text-loss";
 
   return (
     <tr className="border-b last:border-0">

@@ -27,7 +27,7 @@ type Props = {
 /**
  * shadcn/ui ships no multiselect, so this is the documented composition: a
  * Popover holding a searchable Command list. Picks appear as removable chips in
- * the accent colour, which is how a symbol reads as "tracked" everywhere else
+ * the brand colour, which is how a symbol reads as "tracked" everywhere else
  * on the page.
  */
 export function SymbolMultiSelect({ options, selected, onChange }: Props) {
@@ -45,11 +45,11 @@ export function SymbolMultiSelect({ options, selected, onChange }: Props) {
           render={
             <Button
               variant="outline"
-              className="group h-9 gap-2 border-radar/25 bg-radar/5 font-mono text-xs tracking-wide hover:border-radar/40 hover:bg-radar/10"
+              className="group h-9 gap-2 border-brand/25 bg-brand/5 font-mono text-xs tracking-wide hover:border-brand/40 hover:bg-brand/10"
             />
           }
         >
-          <span className="size-1.5 rounded-full bg-radar" />
+          <span className="size-1.5 rounded-full bg-brand" />
           Symbols
           <span className="text-muted-foreground">{selected.length}</span>
           <ChevronDown className="size-3.5 opacity-60 transition-transform group-data-[popup-open]:rotate-180" />
@@ -72,13 +72,13 @@ export function SymbolMultiSelect({ options, selected, onChange }: Props) {
                       data-checked={picked}
                       className={cn(
                         "font-mono text-xs tracking-wide",
-                        picked && "text-radar",
+                        picked && "text-brand",
                       )}
                     >
                       <span
                         className={cn(
                           "size-1.5 rounded-full",
-                          picked ? "bg-radar" : "bg-muted-foreground/40",
+                          picked ? "bg-brand" : "bg-muted-foreground/40",
                         )}
                       />
                       {symbol}
@@ -94,14 +94,14 @@ export function SymbolMultiSelect({ options, selected, onChange }: Props) {
       {selected.map((symbol) => (
         <span
           key={symbol}
-          className="inline-flex h-7 items-center gap-1.5 rounded-md border border-radar/25 bg-radar/10 pr-1 pl-2 font-mono text-xs tracking-wide text-radar"
+          className="inline-flex h-7 items-center gap-1.5 rounded-md border border-brand/25 bg-brand/10 pr-1 pl-2 font-mono text-xs tracking-wide text-brand"
         >
           {symbol}
           <button
             type="button"
             onClick={() => toggle(symbol)}
             aria-label={`Stop tracking ${symbol}`}
-            className="rounded p-0.5 text-radar/70 transition-colors hover:bg-radar/15 hover:text-radar focus-visible:ring-2 focus-visible:ring-radar/50 focus-visible:outline-none"
+            className="rounded p-0.5 text-brand/70 transition-colors hover:bg-brand/15 hover:text-brand focus-visible:ring-2 focus-visible:ring-brand/50 focus-visible:outline-none"
           >
             <X className="size-3" />
           </button>

@@ -1,35 +1,29 @@
 import type { Metadata } from "next";
-import { Chakra_Petch, Inter, JetBrains_Mono } from "next/font/google";
+import { Exo, Roboto_Mono } from "next/font/google";
 import "./globals.css";
 
 import { Providers } from "@/components/providers";
 
-// Three faces, three jobs. next/font self-hosts each one and emits a CSS
-// variable, so there is no render-blocking request to fonts.googleapis.com and
-// no layout shift when a face arrives.
+// Two faces, and both of them are technical. next/font self-hosts each one and
+// emits a CSS variable, so there is no render-blocking request to
+// fonts.googleapis.com and no layout shift when a face arrives. The design
+// system is explicit that this holds whatever the faces are - the generated
+// `@import url(...)` alternative is a regression, not a shortcut.
 
-// Everything that is read as prose: labels, filter names, headings, body copy.
-const inter = Inter({
-  variable: "--font-inter",
+// Headings and the wordmark. Squared and slightly futurist: the instrument
+// character the interface is after, without resorting to a novelty face.
+const exo = Exo({
+  variable: "--font-exo",
   subsets: ["latin"],
 });
 
-// Prices, changes and volumes are read as an instrument panel, so they get a
-// monospace face: digits line up column to column and never reflow as they tick.
-const jetBrainsMono = JetBrains_Mono({
-  variable: "--font-jetbrains-mono",
+// Everything else, prose included. A monospace UI is the point rather than a
+// side effect - readings line up in columns and nothing reflows as a figure
+// ticks. There is exactly one sentence of prose on the page, so the usual
+// objection to mono body text does not apply here.
+const robotoMono = Roboto_Mono({
+  variable: "--font-roboto-mono",
   subsets: ["latin"],
-});
-
-// The wordmark only. Chakra Petch is a squared technical face that suits the
-// radar identity but is tiring to read in a paragraph, so it is wired to a
-// `font-display` utility that exactly one element uses.
-const chakraPetch = Chakra_Petch({
-  variable: "--font-chakra-petch",
-  subsets: ["latin"],
-  // Not a variable font: the weights have to be named up front. The wordmark
-  // is the only user and it is semibold, so one weight is the whole need.
-  weight: ["600"],
 });
 
 export const metadata: Metadata = {
@@ -45,7 +39,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${inter.variable} ${jetBrainsMono.variable} ${chakraPetch.variable} h-full antialiased`}
+      className={`${exo.variable} ${robotoMono.variable} h-full antialiased`}
     >
       <body className="min-h-full bg-background text-foreground">
         <Providers>{children}</Providers>

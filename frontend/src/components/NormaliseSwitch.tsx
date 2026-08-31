@@ -13,7 +13,7 @@ export function NormaliseSwitch({ checked, onChange }: Props) {
       <Switch
         checked={checked}
         onCheckedChange={onChange}
-        className="data-checked:bg-radar"
+        className="data-checked:bg-brand"
       />
       Normalise to %
     </label>

@@ -17,24 +17,30 @@ import {
 
 export type ChartTheme = "light" | "dark";
 
-/** The literal counterparts of `--radar` and `--loss` in globals.css. */
-const RADAR = { dark: "#3ed992", light: "#167f42" };
-const LOSS = { dark: "#f2545b", light: "#c4162f" };
+/**
+ * The literal counterparts of `--brand`, `--gain` and `--loss` in globals.css.
+ *
+ * BRAND is identity and GAIN is direction, and they are deliberately different
+ * colours: an amber bar must never be readable as a rising one.
+ */
+const BRAND = { dark: "#f59e0b", light: "#b45309" };
+const GAIN = { dark: "#2dd4bf", light: "#115e59" };
+const LOSS = { dark: "#f87171", light: "#b91c1c" };
 
-const AXIS_TEXT = { dark: "#8b93a7", light: "#5b6472" };
+const AXIS_TEXT = { dark: "#94a3b8", light: "#475569" };
 const GRID_LINE = {
-  dark: "rgba(148, 163, 184, 0.10)",
+  dark: "rgba(148, 163, 184, 0.12)",
   light: "rgba(71, 85, 105, 0.14)",
 };
 /** The chip behind a crosshair figure: darker than the page in both themes. */
-const CROSSHAIR_LABEL = { dark: "#16211c", light: "#1d3527" };
+const CROSSHAIR_LABEL = { dark: "#0b1220", light: "#1e293b" };
 const CROSSHAIR_LINE = {
-  dark: "rgba(62, 217, 146, 0.45)",
-  light: "rgba(22, 127, 66, 0.55)",
+  dark: "rgba(245, 158, 11, 0.45)",
+  light: "rgba(180, 83, 9, 0.55)",
 };
 
 const MONO_STACK =
-  "var(--font-jetbrains-mono), ui-monospace, SFMono-Regular, monospace";
+  "var(--font-roboto-mono), ui-monospace, SFMono-Regular, monospace";
 
 export function chartOptions(theme: ChartTheme): DeepPartial<ChartOptions> {
   const crosshairLine = {
@@ -84,25 +90,26 @@ export function candlestickOptions(theme: ChartTheme) {
     // Borders are what draw a hollow body at all, so unlike the filled version
     // they cannot be switched off.
     borderVisible: true,
-    borderUpColor: RADAR[theme],
+    borderUpColor: GAIN[theme],
     borderDownColor: LOSS[theme],
-    wickUpColor: RADAR[theme],
+    wickUpColor: GAIN[theme],
     wickDownColor: LOSS[theme],
   };
 }
 
 /**
  * One colour per line series, cycled if more symbols than colours are picked.
- * The accent leads: with a single symbol selected - the common case - the chart
- * is drawn in the same green as the rest of the interface.
+ * The brand leads: with a single symbol selected - the common case - the chart
+ * is drawn in the same amber as the rest of the interface.
  *
  * The light row is not the dark row darkened by eye; every entry clears 4.5:1
- * against white, where the dark row sits between 1.7:1 and 2.5:1 and would
- * read as pastel noise.
+ * against white, where the dark row sits far below it and would read as pastel
+ * noise. Hue is only half the encoding either way - `lineStyle` below carries
+ * the other half.
  */
 const LINE_COLORS: Record<ChartTheme, string[]> = {
-  dark: [RADAR.dark, "#5ab0ff", "#c58cff", "#f7b955", "#ff7ab8", "#4dd8d1"],
-  light: [RADAR.light, "#1a6fd4", "#7b3fd1", "#a35c00", "#c02a72", "#0f7a75"],
+  dark: [BRAND.dark, "#60a5fa", "#c084fc", "#34d399", "#f472b6", "#22d3ee"],
+  light: [BRAND.light, "#1d4ed8", "#7e22ce", "#047857", "#be185d", "#0e7490"],
 };
 
 /**
