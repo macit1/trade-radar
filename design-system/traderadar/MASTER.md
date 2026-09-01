@@ -55,24 +55,29 @@ separately — never the dark values inverted.
 | Border | `#334155` | |
 | Foreground | `#F8FAFC` | |
 | Muted foreground | `#94A3B8` | |
-| **Brand / primary** | `#60A5FA` | launch blue. Light mode uses `#1D4ED8` — the same hue several steps darker, because the dark value is 3.4:1 on white |
-| Secondary | `#3B82F6` | |
+| **Brand / primary** | `#4ADE80` | radar green. Light mode uses `#15803D` — the same hue several steps darker, because the dark value is 2.0:1 on white |
+| Secondary | `#22C55E` | |
 | Accent | `#8B5CF6` | violet, sparingly — one CTA per view at most |
 | Destructive | `#EF4444` | |
 
-*Source: the Space Tech / Aerospace record — "Star white + launch blue". An
-earlier amber (`#F59E0B`, "Gold trust + purple tech") was tried and rejected.*
+*Source: the radar/phosphor reading of the product name. A launch blue
+(`#60A5FA`) and an earlier amber (`#F59E0B`) were both tried and set aside —
+the green is the identity the project keeps coming back to.*
 
-Blue was chosen over indigo because indigo sits too close to the violet
-`--accent`, and over a metallic grey-blue because `#94A3B8` is already
-`--muted-foreground` in dark mode — a brand colour cannot also be the colour of
-de-emphasised text.
+Green was chosen at hue 148 rather than a mint or emerald nearer 165 because
+the closer it drifts to `--gain`'s teal the more the brand starts to read as
+"up". It also avoids the violet `--accent` and the grey-blue `#94A3B8` that is
+already `--muted-foreground` in dark mode — a brand colour cannot also be the
+colour of de-emphasised text.
 
 ### Gain / loss are a separate pair
 
-Brand amber must never mean "up". Direction gets its own semantic tokens, and
-teal beats green here: **teal vs red separates for a red-green colourblind
-viewer where green vs red does not.**
+The brand green must never mean "up" — the constraint the palette works
+hardest to hold. Direction gets its own semantic tokens, and teal beats green
+here twice over: **teal vs red separates for a red-green colourblind viewer
+where green vs red does not**, and it keeps direction out of the brand's hue
+band. The two never share a surface either: the brand draws chrome and line
+series, `--gain` only ever draws a candle body.
 
 | Token | Dark | Light |
 |---|---|---|
