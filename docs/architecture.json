@@ -1,0 +1,265 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "TradeRadar Runtime Architecture",
+    "locale": "en",
+    "output": "architecture.html",
+    "quality_profile": "showcase",
+    "repository": {
+      "url": "https://github.com/macit1/trade-radar",
+      "revision": "f969a2e2df667a0bcb161bfc57ddc110aec6334a"
+    },
+    "views": [
+      {
+        "id": "primary-path",
+        "label": "Primary data flow",
+        "focus": [
+          "yahoo",
+          "cli",
+          "store",
+          "api",
+          "web"
+        ],
+        "note": "One direction: fetch, store, serve, chart. Nothing calls back upstream."
+      },
+      {
+        "id": "write-side",
+        "label": "Write side (batch)",
+        "focus": [
+          "yahoo",
+          "cli",
+          "store",
+          "csv"
+        ],
+        "note": "Run by hand. The CLI is the only writer and never knows an API exists."
+      },
+      {
+        "id": "read-side",
+        "label": "Read side (request time)",
+        "focus": [
+          "store",
+          "api",
+          "web"
+        ],
+        "note": "Read-only on every page load. The API never fetches from Yahoo."
+      }
+    ]
+  },
+  "components": [
+    {
+      "id": "yahoo",
+      "type": "external",
+      "label": "Yahoo Finance",
+      "sublabel": "chart endpoint",
+      "tag": "unofficial, no API key",
+      "pos": [
+        40,
+        70
+      ],
+      "size": [
+        140,
+        68
+      ]
+    },
+    {
+      "id": "cli",
+      "type": "backend",
+      "label": "TradeRadar CLI",
+      "sublabel": "main.py + fetcher.py",
+      "tag": "the only writer",
+      "pos": [
+        310,
+        70
+      ],
+      "size": [
+        140,
+        68
+      ],
+      "sources": [
+        {
+          "path": "main.py",
+          "label": "argparse entry point"
+        },
+        {
+          "path": "traderadar/fetcher.py",
+          "label": "Yahoo to DataFrame"
+        },
+        {
+          "path": "traderadar/validation.py",
+          "label": "post-write checks"
+        }
+      ]
+    },
+    {
+      "id": "store",
+      "type": "database",
+      "label": "SQLite store",
+      "sublabel": "data/traderadar.db",
+      "tag": "the only handoff",
+      "pos": [
+        580,
+        70
+      ],
+      "size": [
+        140,
+        68
+      ],
+      "sources": [
+        {
+          "path": "traderadar/storage.py",
+          "label": "sinks and read queries"
+        }
+      ]
+    },
+    {
+      "id": "api",
+      "type": "backend",
+      "label": "FastAPI backend",
+      "sublabel": "uvicorn :8000",
+      "tag": "read-only",
+      "pos": [
+        850,
+        70
+      ],
+      "size": [
+        140,
+        68
+      ],
+      "sources": [
+        {
+          "path": "backend/main.py",
+          "label": "/symbols and /prices"
+        }
+      ]
+    },
+    {
+      "id": "web",
+      "type": "frontend",
+      "label": "Next.js dashboard",
+      "sublabel": "React 19 :3000",
+      "tag": "filters run locally",
+      "pos": [
+        1120,
+        70
+      ],
+      "size": [
+        140,
+        68
+      ],
+      "sources": [
+        {
+          "path": "frontend/src/app/page.tsx",
+          "label": "owns every filter"
+        }
+      ]
+    },
+    {
+      "id": "csv",
+      "type": "database",
+      "label": "CSV archive",
+      "sublabel": "data/raw/*.csv",
+      "tag": "write-only",
+      "pos": [
+        310,
+        220
+      ],
+      "size": [
+        140,
+        64
+      ]
+    }
+  ],
+  "boundaries": [
+    {
+      "kind": "region",
+      "label": "Local machine - no cloud, no credentials",
+      "wraps": [
+        "cli",
+        "store",
+        "api",
+        "web",
+        "csv"
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "id": "fetch",
+      "from": "yahoo",
+      "to": "cli",
+      "label": "GET /v8/finance/chart",
+      "variant": "emphasis"
+    },
+    {
+      "id": "upsert",
+      "from": "cli",
+      "to": "store",
+      "label": "INSERT OR REPLACE",
+      "variant": "emphasis"
+    },
+    {
+      "id": "read",
+      "from": "store",
+      "to": "api",
+      "label": "SELECT by symbol",
+      "variant": "emphasis"
+    },
+    {
+      "id": "serve",
+      "from": "api",
+      "to": "web",
+      "label": "GET /symbols, /prices",
+      "variant": "emphasis"
+    },
+    {
+      "id": "csv-sink",
+      "from": "cli",
+      "to": "csv",
+      "label": "optional csv sink",
+      "variant": "dashed",
+      "labelDy": 50
+    }
+  ],
+  "cards": [
+    {
+      "dot": "emerald",
+      "title": "Primary path",
+      "items": [
+        "One direction: fetch, store, serve, chart",
+        "The database file is the only handoff",
+        "Batch CLI on one side, request-time API on the other"
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "CLI and storage",
+      "items": [
+        "--output csv sql picks sinks at run time",
+        "Each symbol fetched once; partial bars dropped",
+        "prices keyed on (symbol, date), INSERT OR REPLACE",
+        "Every write is followed by a validation pass, exit code and all"
+      ]
+    },
+    {
+      "dot": "orange",
+      "title": "API and dashboard",
+      "items": [
+        "GET /symbols and /prices, repeated params",
+        "CORS scoped to localhost:3000 and GET",
+        "Full history cached 5 min: 4,518 bars, ~680 KB",
+        "Period and normalise recompute locally"
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "External dependencies",
+      "items": [
+        "Yahoo Finance: unofficial, no API key, no contract",
+        "range=max ignores interval and returns monthly bars",
+        "Python: requests, pandas, PyYAML, fastapi, uvicorn",
+        "JS: next 16, react 19, TanStack Query, lightweight-charts"
+      ]
+    }
+  ]
+}

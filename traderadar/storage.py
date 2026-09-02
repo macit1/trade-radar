@@ -3,7 +3,7 @@
 Every sink shares one signature so the CLI can pick at run time:
     sink(prices, symbol, interval, config) -> str describing where the data landed
 
-Readers exist so consumers (the dashboard) never open their own connection.
+Readers exist so consumers (the API) never open their own connection.
 """
 
 import sqlite3

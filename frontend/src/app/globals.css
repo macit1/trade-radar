@@ -1,0 +1,275 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  /*
+   * Three semantic colours, and the split between them is deliberate: --brand
+   * is identity and never means "up". Direction has its own pair, so a rising
+   * bar can never be mistaken for a logo.
+   */
+  --color-brand: var(--brand);
+  --color-brand-dim: var(--brand-dim);
+  --color-gain: var(--gain);
+  --color-loss: var(--loss);
+  /*
+   * Tailwind v4 has no tailwind.config.js - the theme *is* this block, and a
+   * `--font-x` key here is what creates the `font-x` utility. Every stack ends
+   * in a real fallback so the page still reads correctly if a face fails.
+   */
+  --font-mono: var(--font-roboto-mono), ui-monospace, SFMono-Regular, monospace;
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  /* The UI face is the mono one: readings line up in columns and nothing
+     reflows as a figure ticks. Not a fallback - the instrument look is why. */
+  --font-sans: var(--font-roboto-mono), ui-monospace, SFMono-Regular, monospace;
+  --font-display: var(--font-exo), ui-sans-serif, system-ui, sans-serif;
+  /* Spelled out rather than var(--font-sans): @theme inline does not emit its
+     keys as custom properties, so a reference to one resolves to nothing. */
+  --font-heading: var(--font-exo), ui-sans-serif, system-ui, sans-serif;
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+/*
+ * Dark is the primary mode here and light is a measured second one, not the
+ * dark values inverted. Every figure below was checked against the surface it
+ * actually sits on - the card, not just the page, because the card is darker
+ * than the page in dark mode and lighter than it in light mode, and a pair that
+ * passes on one can fail on the other.
+ */
+:root {
+  /*
+   * Radar green reads 2.0:1 on white at its dark-mode value, so light mode
+   * takes the same hue several steps darker rather than the same hex. Likewise
+   * teal and red.
+   *
+   * The brand green and --gain sit in neighbouring bands, which is the one
+   * risk this palette carries: green-700 is hue 148 and the teal below it 180,
+   * far enough apart to read as different families. --gain also stays teal
+   * rather than drifting green for exactly that reason - direction and
+   * identity must never converge.
+   */
+  --brand: #15803d; /* 4.8:1 on the page */
+  --brand-dim: #166534;
+  --gain: #115e59; /* 5.6:1 */
+  --loss: #b91c1c; /* 5.0:1 */
+
+  /*
+   * Symbol badge colours. Six, matching BADGE_SLOTS in lib/symbolBadge.ts.
+   * None of them lands in the teal or red band - those belong to --gain and
+   * --loss, and a company badge must never be readable as a price direction.
+   * Every entry clears 4.5:1 against the card it sits on.
+   */
+  --badge-1: #b45309;
+  --badge-2: #be185d;
+  --badge-3: #4d7c0f;
+  --badge-4: #7e22ce;
+  --badge-5: #0369a1;
+  --badge-6: #c2410c;
+
+  /*
+   * Panel definition is one effect with two settings. On a dark ground a faint
+   * tint plus a lit top edge reads as depth; on a light one the same numbers
+   * vanish, so light leans on the border and keeps the fill nearly clean.
+   */
+  --panel-border: 30%;
+  --panel-tint: 3%;
+  --panel-edge: 28%;
+  /* The sweep is a wedge of brand over the mark. On light it needs to be
+     denser than on dark to read as a sweep rather than a smudge. */
+  --sweep-strength: 70%;
+
+  --background: #f8fafc;
+  --foreground: #0f172a;
+  --card: #ffffff;
+  --card-foreground: #0f172a;
+  --popover: #ffffff;
+  --popover-foreground: #0f172a;
+  --primary: #0f172a;
+  --primary-foreground: #f8fafc;
+  --secondary: #f1f5f9;
+  --secondary-foreground: #0f172a;
+  --muted: #f1f5f9;
+  --muted-foreground: #475569; /* 7.4:1 on the page */
+  --accent: #6d28d9; /* violet, one CTA per view at most */
+  --accent-foreground: #ffffff;
+  --destructive: #b91c1c;
+  --border: #e2e8f0;
+  --input: #e2e8f0;
+  --ring: #15803d;
+  --radius: 0.5rem;
+}
+
+.dark {
+  /* The phosphor end of the ramp: bright enough to carry the identity on a
+     near-black ground at 10.3:1 against the card. */
+  --brand: #4ade80;
+  --brand-dim: #22c55e;
+  --gain: #2dd4bf; /* 8.0:1 */
+  /*
+   * Not #ef4444: that is 4.0:1 against the card and fails AA for the change
+   * figures it colours. One step lighter clears it at 5.4:1.
+   */
+  --loss: #f87171;
+
+  --badge-1: #fbbf24;
+  --badge-2: #f472b6;
+  --badge-3: #a3e635;
+  --badge-4: #c084fc;
+  --badge-5: #38bdf8;
+  --badge-6: #fb923c;
+
+  --panel-border: 26%;
+  --panel-tint: 4%;
+  --panel-edge: 42%;
+  --sweep-strength: 55%;
+
+  /* Deep navy rather than black: black would swallow the 1px hairlines the
+     interface leans on instead of shadows. */
+  --background: #0f172a;
+  --foreground: #f8fafc;
+  --card: #222735;
+  --card-foreground: #f8fafc;
+  --popover: #222735;
+  --popover-foreground: #f8fafc;
+  --primary: #f8fafc;
+  --primary-foreground: #0f172a;
+  --secondary: #272f42;
+  --secondary-foreground: #f8fafc;
+  --muted: #272f42;
+  --muted-foreground: #94a3b8; /* 6.5:1 on the page */
+  /* Not #8b5cf6: violet-500 is 4.2:1 on this ground and misses AA. One step
+     lighter clears it at 6.4:1. */
+  --accent: #a78bfa;
+  --accent-foreground: #0f172a;
+  --destructive: #f87171;
+  --border: #334155;
+  --input: #3b475c;
+  --ring: #4ade80;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  html {
+    @apply font-sans;
+  }
+}
+/* The one animated element on the page: a sweep line orbiting the logo mark. */
+@keyframes radar-sweep {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.radar-sweep {
+  animation: radar-sweep 4s linear infinite;
+}
+
+/*
+ * The sweep was the only animation when this guard was written, but hover and
+ * state transitions have accumulated since. Covering everything is the honest
+ * reading of the preference: a viewer who asks for less motion gets the final
+ * state immediately rather than the shortest of several bespoke exceptions.
+ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/*
+ * The trend lines draw themselves in once. `pathLength={1}` on the polyline
+ * normalises the stroke, so one rule covers every line whatever its real
+ * length. The global reduced-motion guard above collapses this to 0.01ms,
+ * which lands on a fully drawn line - the correct final state, not a
+ * half-drawn one.
+ */
+@keyframes sparkline-draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.sparkline-draw {
+  stroke-dasharray: 1;
+  animation: sparkline-draw 0.45s ease-out both;
+}
+
+/*
+ * Cards are otherwise flat rectangles on a flat background. A hairline in the
+ * brand plus a single lit edge along the top gives them definition without a
+ * neon glow, which would compete with the numbers.
+ */
+.panel {
+  position: relative;
+  border-color: color-mix(in oklab, var(--brand) var(--panel-border), transparent);
+  background-image: linear-gradient(
+    to bottom,
+    color-mix(in oklab, var(--brand) var(--panel-tint), transparent),
+    transparent 40%
+  );
+}
+
+.panel::before {
+  content: "";
+  position: absolute;
+  inset-inline: 1rem;
+  top: -1px;
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    color-mix(in oklab, var(--brand) var(--panel-edge), transparent),
+    transparent
+  );
+}

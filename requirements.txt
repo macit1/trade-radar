@@ -1,5 +1,7 @@
-pandas
-plotly
-requests
-PyYAML
-streamlit
+# Thin export of pyproject.toml's [project.dependencies] for plain pip installs.
+# pyproject.toml is the source of truth - edit there first, mirror here.
+fastapi>=0.115
+pandas>=2.2
+PyYAML>=6.0
+requests>=2.32
+uvicorn[standard]>=0.30

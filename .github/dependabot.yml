@@ -1,0 +1,32 @@
+version: 2
+
+updates:
+  # Python runtime and dev dependencies live in pyproject.toml.
+  - package-ecosystem: pip
+    directory: "/"
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    # Dependabot targets the default branch unless told otherwise, and daily
+    # work happens on development - a PR against main would jump the queue.
+    target-branch: development
+    commit-message:
+      prefix: "[Chore]"
+
+  - package-ecosystem: npm
+    directory: "/frontend"
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    target-branch: development
+    commit-message:
+      prefix: "[Chore]"
+
+  # The workflow's own actions go stale too, and this is the file that pins them.
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: weekly
+    target-branch: development
+    commit-message:
+      prefix: "[Chore]"

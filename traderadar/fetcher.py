@@ -11,6 +11,7 @@ USER_AGENT = (
 REQUEST_TIMEOUT = 15
 
 COLUMNS = ["Date", "Open", "High", "Low", "Close", "Volume"]
+OHLC = ["Open", "High", "Low", "Close"]
 
 
 def fetch_prices(symbol, price_range, interval):
@@ -52,7 +53,12 @@ def fetch_prices(symbol, price_range, interval):
         }
     )
 
+    # Yahoo publishes the current session's bar before the close, with some of
+    # its OHLC still empty. A partial bar is not a daily bar: drop it so the
+    # store always ends on the last completed session.
+    prices = prices.dropna(subset=OHLC)
+
     if prices.empty:
         raise ValueError(f"Empty price series for '{symbol}'")
 
-    return prices[COLUMNS]
+    return prices[COLUMNS].reset_index(drop=True)
