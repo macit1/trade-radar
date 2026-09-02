@@ -20,10 +20,12 @@ export type ChartTheme = "light" | "dark";
 /**
  * The literal counterparts of `--brand`, `--gain` and `--loss` in globals.css.
  *
- * BRAND is identity and GAIN is direction, and they are deliberately different
- * colours: an amber bar must never be readable as a rising one.
+ * BRAND is identity and GAIN is direction. They are the closest pair in this
+ * palette - green against teal - so the separation is held by hue distance
+ * (148 vs 180) and by the fact that they never share a surface: the brand
+ * draws chrome and line series, GAIN only ever draws a candle body.
  */
-const BRAND = { dark: "#60a5fa", light: "#1d4ed8" };
+const BRAND = { dark: "#4ade80", light: "#15803d" };
 const GAIN = { dark: "#2dd4bf", light: "#115e59" };
 const LOSS = { dark: "#f87171", light: "#b91c1c" };
 
@@ -35,8 +37,8 @@ const GRID_LINE = {
 /** The chip behind a crosshair figure: darker than the page in both themes. */
 const CROSSHAIR_LABEL = { dark: "#0b1220", light: "#1e293b" };
 const CROSSHAIR_LINE = {
-  dark: "rgba(96, 165, 250, 0.45)",
-  light: "rgba(29, 78, 216, 0.55)",
+  dark: "rgba(74, 222, 128, 0.45)",
+  light: "rgba(21, 128, 61, 0.55)",
 };
 
 const MONO_STACK =
@@ -100,7 +102,7 @@ export function candlestickOptions(theme: ChartTheme) {
 /**
  * One colour per line series, cycled if more symbols than colours are picked.
  * The brand leads: with a single symbol selected - the common case - the chart
- * is drawn in the same blue as the rest of the interface.
+ * is drawn in the same green as the rest of the interface.
  *
  * The light row is not the dark row darkened by eye; every entry clears 4.5:1
  * against white, where the dark row sits far below it and would read as pastel

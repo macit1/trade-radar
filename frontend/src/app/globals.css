@@ -76,12 +76,18 @@
  */
 :root {
   /*
-   * Launch blue reads 3.4:1 on white at its dark-mode value, so light mode
+   * Radar green reads 2.0:1 on white at its dark-mode value, so light mode
    * takes the same hue several steps darker rather than the same hex. Likewise
    * teal and red.
+   *
+   * The brand green and --gain sit in neighbouring bands, which is the one
+   * risk this palette carries: green-700 is hue 148 and the teal below it 180,
+   * far enough apart to read as different families. --gain also stays teal
+   * rather than drifting green for exactly that reason - direction and
+   * identity must never converge.
    */
-  --brand: #1d4ed8; /* 6.4:1 on the page */
-  --brand-dim: #1e40af;
+  --brand: #15803d; /* 4.8:1 on the page */
+  --brand-dim: #166534;
   --gain: #115e59; /* 5.6:1 */
   --loss: #b91c1c; /* 5.0:1 */
 
@@ -127,15 +133,15 @@
   --destructive: #b91c1c;
   --border: #e2e8f0;
   --input: #e2e8f0;
-  --ring: #1d4ed8;
+  --ring: #15803d;
   --radius: 0.5rem;
 }
 
 .dark {
-  /* Not #3b82f6: blue-500 is 4.0:1 against the card and misses AA. One step
-     lighter clears it at 5.9:1. */
-  --brand: #60a5fa;
-  --brand-dim: #3b82f6;
+  /* The phosphor end of the ramp: bright enough to carry the identity on a
+     near-black ground at 10.3:1 against the card. */
+  --brand: #4ade80;
+  --brand-dim: #22c55e;
   --gain: #2dd4bf; /* 8.0:1 */
   /*
    * Not #ef4444: that is 4.0:1 against the card and fails AA for the change
@@ -176,7 +182,7 @@
   --destructive: #f87171;
   --border: #334155;
   --input: #3b475c;
-  --ring: #60a5fa;
+  --ring: #4ade80;
 }
 
 @layer base {
